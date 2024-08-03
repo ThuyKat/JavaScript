@@ -157,3 +157,6 @@ myArray[2];
 ```js
 myArray[3] = "hello";
 ```
+- length of array --> myArray.length
+- you can print the whole object
+- an array is actually an object with properties named 1,2,3..--> therefore we have to user square bracket. JavaScript converts number 1,2,3 to String type. 
