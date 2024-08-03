@@ -55,9 +55,19 @@ if(d){
 - Not class based: unlike Java which depends on class template. Its free of form, you can add/remove anything in the object anytime
 - Objects include properties( attributes/data) and methods(functionalities)
 - No compilation step: if you access an property that does not exist --> it is an undefied property
+
+```js
+var person = {
+    "firstName" : "Koushik",
+    "middleName" : null,
+    "lastName" : "Kothagal"
+};
+//if we try to access age property: person.age --> this returns undefined
+// person.middleName --> null
+```
 - Object can have method
 - the dot notation/ the square bracket [] notation: access property of object. The square bracket is specificaly used for case when the property name is invalid, like " 1" which is not accessible by dot notation
-- Property name is dynamic
+
 ```js
 var myObj = {}; //empty object
 console.log(myObj); // return Object {}
@@ -74,3 +84,76 @@ var myObj2 = {
 console.log(myObj[prop]); // access prop property
 
 console.log(myObj[1]);
+```
+- Property name is dynamic. We can assign the name of the property to a variable and get its value using the square bracket
+```js
+var myObj2 = {
+    "prop":"hello",
+    "prop1":123,
+    "prop2": true
+};
+var propertyname = "prop1";
+console.log(myObj[propetyName]);
+```
+- The dot notation is faster than square bracket because when the property name is known at compile time (compiled to machine code at runtime uses Just-In-Time compilation technique, during this process, the engines make optimizations based on the patterns they observe, including how properties are accessed). In contrast, the square bracket notation requires engine to evaluate the expression inside the brackets to determine the property name at runtime. So with square bracket, it adds an extra step which can slow down the process. With dot notation, the engine can quickly predict the property location in memory
+
+### Deleting properties with the delete operator (delete)
+- Whenever we want the property to disappear from the Object, we should not declare it as undefined but use keyword " delete" to remove the property
+```js
+delete person.middleName;
+```
+
+## Nested object
+
+```js
+
+var myObj2 = {
+    "prop":"hello",
+    "prop1":123,
+    "prop2": true
+    "objProp":{
+        "innerProp": "Inner property"
+    }
+};
+
+console.log(myObj2.objProp.innerProp); //  "Inner property" printed
+
+Obj2.objProp.newInner = "new inner value"; // new property defined for objProp
+
+console.log(myObj.objProp[newInner]); // "new inner value" printed
+```
+
+## Two objects pointing to the same address location
+
+```js
+var myObj = {
+    "myProp":"hello"
+};
+var myObj2;
+myObj2 = myObj;
+
+console.log(myObj2.myProp);
+
+// to check if two objects pointing to the same location address
+if(myObj === myObj2){
+    console.log("Variables are equal");
+}
+
+```
+
+## Array
+
+```js
+var myArray = [100,200,300];
+myArray[0]; 
+myArray[1];
+myArray[2];
+
+```
+- mix type
+- if we access non-exist elements return undefined 
+- add more items to the array: 
+
+```js
+myArray[3] = "hello";
+```
