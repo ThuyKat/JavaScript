@@ -159,4 +159,78 @@ myArray[3] = "hello";
 ```
 - length of array --> myArray.length
 - you can print the whole object
-- an array is actually an object with properties named 1,2,3..--> therefore we have to user square bracket. JavaScript converts number 1,2,3 to String type. 
+- an array is actually an object with properties named 1,2,3..--> therefore we have to user square bracket. JavaScript converts number 1,2,3 to String type.
+- key in array has to be a number. Lets say we add new element with key =400:
+  ```js
+  myArray[400] = "world";
+  myArray.length // return 401
+  ```
+## Wrapper Objects in Java
+- String is of primitive type. However we can use String.length --> this indicates that it is converted to String object
+- 4 types of wrapper objects: String, Boolean, Number and Symbol
+## Functions
+```js
+function sayHello(){
+    console.log("hello");
+}
+sayHello(); // "hello" printed
+```
+- Arguments can be passed without declaring type
+```js
+function sayHello(name, timeOfDay){
+    console.log("hello" + name + "time of day is" + timeOfDay);
+}
+sayHello("thuy","morning"); // "hello thuy time of day is morning" printed
+```
+- If we dont provide enough arguments, the undeclared arguments return undefined
+- If we provide more than enough arguments, the non-exist arguments wil be ignore
+- To return a value, just add return keyword. Result of a function with return keyword can be assigned to a variable
+```js
+function sayHello(name, timeOfDay){
+    return "hello" + name + "time of day is" + timeOfDay;
+}
+var a = sayHello("thuy","afternoon") 
+```
+### Function Expression
+- the function itself is a value in JavaScript. So a function without return keyword can also be assigned to a variable. This, we say the variable contains a function.
+```js
+var f = function sayHello(){
+console.log("hello");
+}
+f(); // this prints "hello"
+```
+- Annonymous function expression: notice that above function's name sayHello() is never used, so we can actually remove it:
+```js
+var f = function (){
+console.log("hello");
+}
+f(); // this prints "hello"
+```
+### Function as argument
+```js
+var f = function (){
+console.log("hello");
+}
+var executor = function(x){
+console.log(x);
+}
+var executor1 = function(x){
+x();
+}
+executor(f); // this prints " function f()"
+executor1(f); // this prints "hello"
+var f1 = function (name){
+console.log("hello " + name);
+}
+var executor2 = function(fn,name){
+fn(name);
+}
+executor2(f,"thuy"); // this prints "hello thuy"
+```
+### Function as an object's property --> Method
+```js
+var myObj ={
+"testProp" : true
+};
+myObj.myMethod = function(){
+
