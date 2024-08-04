@@ -165,10 +165,38 @@ myArray[3] = "hello";
   myArray[400] = "world";
   myArray.length // return 401
   ```
+### Array Methods
+- Adding and removing elements at the last positon: myArray.push(50); myArray.pop()
+- Adding and removing elements from the front of the array: myArray.unshift(42);myArray.shift()
+- Look through the array and examine each and every elements of the array: myArray.forEach(function) - it takes function as an argument
+```js
+var myArray = [10,20,"hello",{}];
+myArray.forEach(function(item){
+    console.log("for an element"+item);
+}); // print for an element 10 for an element 20...for an element [Object object]
+```
+- The format is: 
+
+myArray.forEach(function(item,index,array){
+    console.log(item,index);
+});
+
+index is where the loop starts. 
+## Math object -> a built in object that has properties and methods for math constants and functions
+
 ## Wrapper Objects in Java
 - String is of primitive type. However we can use String.length --> this indicates that it is converted to String object
 - 4 types of wrapper objects: String, Boolean, Number and Symbol
 ## Functions
+
+1. Functions can be written in literal form
+2. A function is a value that can be assigned to a variable
+3. Functions are objects
+4. Functions can be called by passing in arguments
+5. Flexible argument count
+6. No function overloading: no matter many arguments are passed,it's the same function
+7. Default argument, arguments argument
+
 ```js
 function sayHello(){
     console.log("hello");
@@ -192,7 +220,8 @@ function sayHello(name, timeOfDay){
 var a = sayHello("thuy","afternoon") 
 ```
 ### Function Expression
-- the function itself is a value in JavaScript. So a function without return keyword can also be assigned to a variable. This, we say the variable contains a function.
+- the function itself is a value in JavaScript. So a function without return keyword can also be assigned to a variable. This, we say the variable contains a function. --> function is also an object
+
 ```js
 var f = function sayHello(){
 console.log("hello");
@@ -228,9 +257,80 @@ fn(name);
 executor2(f,"thuy"); // this prints "hello thuy"
 ```
 ### Function as an object's property --> Method
+- create method like how you create a property with anonymous function
+- execute the method using classname.methodname()
 ```js
 var myObj ={
 "testProp" : true
 };
 myObj.myMethod = function(){
+console.log("hello");
+}
+myObj.myMethod();// "hello" printed
+console.log(myObj);// prints: Object{testProp:true,myMethod:myMethod()}
+```
+- "this" keyword: 
 
+```js
+var person = {
+    "firstName":"kat",
+    "lastName":"Nguyen",
+    "getFullName" :function(){
+        return person.firstName + " "+person.lastName;
+    }
+};
+var fullName = person.getFullName();
+console.log(fullName);
+```
+- The above code is fragile because it cannot have person variable changed. For example if we have :
+```js
+var person2 = person;
+person = {};
+```
+If we hardcode like above, we will not be able to call the method and execute it. In order for this to work, for it to work with whaterver the object's name, we use keyword " this":
+
+
+```js
+var person = {
+    "firstName":"kat",
+    "lastName":"Nguyen",
+    "getFullName" :function(){
+        return this.firstName + " "+this.lastName;
+    }
+};
+var fullName = person.getFullName();
+console.log(fullName);
+```
+
+### default function argument
+- In java, we declare a varargs parameter: 
+```java
+public void exampleMethod(String str,int... numbers){/*..*/}
+```
+this means the method can accept n integers. Inside the method, the varargs parameter is treated as an array. So, in the example above, numbers is actually an int[].
+- In javaScript, you get this by default. You can pass "arguments" to a method as an implicit arguments.
+-  Arguments value in JavaScript is not an array. It is array-like only that it has length property an allows access to its elements using index notation : arguments[0],arguments[1].However, it does not have array methods like forEach, map, etc. To use array methods, you need to convert it into a real array.
+```js
+var add = function(a,b){ // NOTE: we dont need to declare "arguments"
+    console.log(arguments);
+    return a +b;
+};
+console.log(add(10,30)); 
+/*
+Arguments { 0:10,1:30,2more...}
+40
+*/
+var add2 = function(a,b){
+    var i,sum = 0;
+    for(i=0,i< arguments.length,i++){
+        sum+= arguments[i];
+    }
+    return sum;
+};
+console.log(add(10,30,2,3,5,3));
+```
+- convert arguments into real array:
+```js
+let argsArray = Array.prototype.slice.call(arguments);
+//or using spread operator
+//let argsArray = [...arguments];
