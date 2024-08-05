@@ -428,3 +428,94 @@ console.log(school); // this returns null because JS use variable name = undefin
     console.log(name);
 } )();
 ```
+## read and write operations
+
+```js
+var a = 10;
+var b;
+b =a 
+```
+--> a is read operation and b is write operation
+
+--> affect how js deals with error
+
+--> if you use a variable without declaring it, it's ok to do write operation not read operation
+
+```js
+foo =10; // run -> no error!
+console.log(foo); // without foo =10, error will appear
+```
+
+--> if you declare the variable you can work with read and write operations, if you dont, you can do write operation--> Js creates the variable for you, but you cannot do read operation because Js does not create a variable in this case and hence it throws error
+
+## window object
+
+- Variable outside function is global scope. There is a root object that holds all global variables. The root or global object depends on which runtime you are using. 
+
+--> When you run Js in a browser, the global object is window object : the window object -> load the page -> run Js
+
+--> type window and hit run, we see "Window: about privatebrowsing" and underneath are all global variables it contains
+
+--> whenever you create a global variable and run, this variable is added as property of window object. This happens behind the scence. This works the same for when function is created as well. 
+
+## Compilation and interpretation
+
+- In Java, flow is: source code -> compile -> executed. In Js, what you executed is the src code without creating intermediatery refine. However, there is also compilation step in a fraction of seconds in which browser looks into your src code and identifies things that it needs to execute -> then intepretation step happens and code is executed
+
+- The intepretor just looks for variable in scopes (either global or function scope) to use in its execution. It cares about definition of variable not declaration -> look for the variable in associated scope, assign value to the variable. If it doesnt find any variable with the same name, it goes up one scope to global scope to check if its there. 
+
+- If variable is not declared in function scope, it got created at the global scope where it looks for at last
+
+```js
+var a =10;
+function myfn(){
+    var b =a;
+    console.log(b);
+    c =100;
+}
+my fn(); 
+```
+variable c is created at global scope. --> always use var to declare variable
+
+--> we can avoid this using Strict mode that blocking variable auto-creation in reading operation. This is helpful when we have a typo and Js creates a new variable when it does writing operation during interpreting stage.
+
+## Strict mode -"use strict"
+```js
+"use strict";
+var myName ="";
+myname ="thuy"; // myname wont be created and it throws error
+```
+- It applies in the scope you declare "use strict" either in function or global
+
+## Hoisting
+- No matter where you declare the variable with 'var', since it is used for compilation step, it will always be read first eventhough you declare them at last in your script
+
+```js
+a =10;
+console.log(b);
+c++;
+var a;
+var b;
+var c;
+```
+
+```js
+myFn1();
+function myFn1(){
+
+};
+```
+
+--> this is important for recursive function
+
+--> However this wont work for function expression: var a is created, but when we execute fn(), error is thrown because JS doesnt have the function name in its scope.
+
+```js
+fn();
+var a = fn(){
+
+};
+```
+
+
+
