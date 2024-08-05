@@ -183,6 +183,19 @@ myArray.forEach(function(item,index,array){
 
 index is where the loop starts. 
 ## Math object -> a built in object that has properties and methods for math constants and functions
+1. Math.abs(x) -> returns the absolute value of a number
+2. Math.ceil(x) -> round up a number
+3. Math.floor(x) ->round down a number
+4. Math.min, Math.max
+5. Math.round(x)-> round a number to the nearest integer
+6. Math.sqrt(x)
+7. Math.trunc(x) -> returns the integral part of the number x, removing any fractional digits.
+
+## Date object -> deal with date and time
+1. Date.now() -> return date in milliseconds since 1 January,1970 UTC
+2. var today = new Date()/ new Date('December 17,1995 03:24:00')/new Date(19995,11,17)/new Date(1995,11,17,3,24,0)/new Date('1995-12-17T03:24:00')
+3. Date.getValue -> returns integer value representing the number of milliseconds
+4. Date.getYear, Date.getMonth,Date.getDay,Date.getHour...second / and set as well
 
 ## Wrapper Objects in Java
 - String is of primitive type. However we can use String.length --> this indicates that it is converted to String object
@@ -334,3 +347,84 @@ console.log(add(10,30,2,3,5,3));
 let argsArray = Array.prototype.slice.call(arguments);
 //or using spread operator
 //let argsArray = [...arguments];
+```
+
+Other topics:
+- Scopes and closures
+- Objects and prototypes ( class type in JavaScript)
+- Asynchronous JavaScript - Callbacks and Promises: because JS is a single threat program, so it is important to write asynchronous program for it to function smoothly
+- Client side frameworks:jQuery, React, AngularJS
+- Sever side framework: Node js - MVC
+
+## Scopes
+Part of program where variables can be accessed
+
+- JavaScript has function scoping not block scoping in { } like java
+```js
+var name = "thuy";
+if(name==="thuy"){
+    var school = "accounting";
+}
+console.log(name); // "thuy" printed
+console.log(school); // "accounting"
+```
+--> not yet creating a scope here, school variable can still be accessed, it is not confined in a block { }
+---> if we put if block inside the function  then we cannot access school variable
+
+```js
+var name = "thuy";
+function allocatedShool(){
+if(name==="thuy"){
+    var school = "accounting";
+}
+} 
+allocateSchool() // whatever available outside allocateSchool also avail to allocateSchool, in this case is the name variable
+
+console.log(school); // error!
+```
+- JavaScript when executing a function will look inside the function for the variable, if it is not there, it gonna look for that outside the function
+
+```js
+var name = "thuy";
+
+function allocatedSchool(){
+    
+if(name==="thuy"){
+    var school = "accounting";
+}else{
+    var school = null;
+}
+return school;
+} 
+var school = allocatedSchool()
+console.log(school); // this returns "accounting" because JS use variable name = "thuy"
+```
+- if the function has argument, it will create a new variable, assign the value to that variable. It will not use the global variable
+```js
+var name = "thuy";
+
+function allocatedSchool(name){
+    
+if(name==="thuy"){
+    var school = "accounting";
+}else{
+    var school = null;
+}
+return school;
+} 
+var school = allocatedSchool()
+console.log(school); // this returns null because JS use variable name = undefined
+```
+
+--> with argument, function will not use out of scope variable. Without argument, when variable inside its scope is not available, it will look for that variable outside of the scope. 
+
+--> avoid using global variable: multiple Js scripts running when loading a webpage -> using global variables will make it accessible for all Js scripts. Secondly, there is a chance that the global variable's name can be clashed with name of a library's variable
+
+--> Immediately invoked function expression (IIFE)
+
+```js
+(function(){
+    var name = "thuy";
+    console.log(name);
+} )();
+```
