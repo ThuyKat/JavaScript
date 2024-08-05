@@ -516,6 +516,74 @@ var a = fn(){
 
 };
 ```
+## Closure
 
+```js
+var a =10; //execute first
+function outer(){
+    var b =20;
+    var inner =function(){
+        console.log(a);
+        console.log(b);
+    };
+    return inner;
+}
+var innerFn = outer(); //execute next, now innerFn = inner 
+innerFin(); // able to access variable a, but inner function is in global scope now and still be able to access variable b
 
+```
+--> for inner function to be executed outside outer function scope, Js actually remembers the original scope of inner function, so eventhough inner function is later executed out of original scope, it can still access variables available in the original scope. 
+
+- Clossures: function that remember its scope where it is declared
+
+## copies
+- everytime we run the script, copy of variable/instance of variable is created. It is created for each execution
+- variable b and variable a are referenced to by inner function, they are used and  not be cleared by garbage collector.Thats why closures is possible. However, its the snapshot of variable b or copy of variable that is created for each and every execution. In each execution, each inner function retains a reference to its own instance of b.
+
+```js
+var a =10; //execute first
+function outer(){
+    var b =20;
+    var inner =function(){
+        a++;
+        b++;
+        console.log(a);
+        console.log(b);
+    };
+    return inner;
+}
+var innerFn = outer(); 
+innerFin(); // 11 and 21 printed
+
+var innerFn2 = outer(); 
+innerFn2(); //12 and 21 printed --> new copy of b created for each execution of outer function
+```
+
+**Execution Flow**
+1. First Call to outer:
+- outer is called, creating a new execution context with b = 20.
+- inner is returned, forming a closure over this specific instance of b.
+- innerFn is assigned this closure.
+- innerFn() increments a to 11 and b to 21, then logs these values.
+2. Second Call to outer:
+- outer is called again, creating a new execution context with a new b = 20.
+- inner is returned again, forming a new closure over this new instance of b.
+- innerFn2 is assigned this new closure.
+- nnerFn2() increments a to 12 (continuing to modify the global a) and b to 21 (modifying the new instance of b), then logs these values.
+
+--> In closures, the variables remembered by the closusre have their own new copies in every execution. However, variables in the scope where the execution happens do not get new copies each time. Copies do not mean duplicates but it means the snapshot of the variable is shared across executios of the closure. 
+
+## closures in callbacks
+
+```js
+var a = 10;
+var fn =function(){
+    console.log(a);
+};
+setTimeout(fn,5000);
+console.log("Done");
+```
+--> fin is executed somewhere else which does not have acess to variable a. Since closures is formed over variable a, it allows setTimeout to execute fn after 5 seconds.
+
+## The module pattern
 
