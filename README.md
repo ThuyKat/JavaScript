@@ -642,7 +642,6 @@ function createPerson(){
     return returnObj;
 }
 };
-
 var person = createPerson();
 console.log(person.getFirstName());
 console.log(person.firstName);//undefined
