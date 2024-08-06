@@ -646,3 +646,39 @@ var person = createPerson();
 console.log(person.getFirstName());
 console.log(person.firstName);//undefined
 ```
+```
+## Closures in async callbacks
+- This code prints i from 0 to 9: 
+```js
+var i;
+for(i = 0;i<10;i++){
+console.log(i);
+}
+```
+- If I want to use setTimeout:
+```js
+var i;
+var print =function(){
+console.log(i);
+};
+for(i = 0;i<10;i++){
+setTimeout(print,1000);
+}
+```
+--> This code prints number 10 for 10 times
+--> this happens because setTimeout queues up 10 times, waited for the loop to finish to be executed. When the loop finish, i =10 is intepreted before setTimeout queue which leads to above behaviour
+--> to fix this issue, we needs to make function print refers to different value of i after each loop
+--> we create an annonymous function inside the loop that wraps around the print function, setTimeout and value of i. This function is set to execute immediately after each loop which gives different value of i that each setTimeout refers to.
+```js
+var i;
+for(i = 0;i<10;i++){
+(function(){
+    var currentValueOfI = i;
+    var print =function(){
+    console.log(currentValueOfI);
+    };
+    setTimeout(print,1000);
+
+})();
+}
+```
