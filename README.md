@@ -646,7 +646,7 @@ var person = createPerson();
 console.log(person.getFirstName());
 console.log(person.firstName);//undefined
 ```
-```
+
 ## Closures in async callbacks
 - This code prints i from 0 to 9: 
 ```js
