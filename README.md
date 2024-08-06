@@ -587,3 +587,63 @@ console.log("Done");
 
 ## The module pattern
 
+- How to prevent access to variable that supposed to be private -> use scope as the way to hide things -> enclosing variable in a scope -> create a function
+
+```js
+var person = {
+    "firstName":"kat",
+    "lastName":"Ma",
+    "getFirstName":function(){
+        return this.firstName;
+    },
+    "getLastName":function(){
+        return this.lastName;
+    }
+}
+console.log(person.firstName); //kat printed
+console.log(person.getFirstName);//kat is also printed
+//the goal here is to make kat printed only when we use person.getFirstName, not person.firstName
+```
+To hide firstName property of object variable: 
+1. Place the object inside a function: 
+```js
+function createPerson(){
+    var person = {
+    "firstName":"kat",
+    "lastName":"Ma",
+    "getFirstName":function(){
+        return this.firstName;
+    },
+    "getLastName":function(){
+        return this.lastName;
+    };
+    return person;
+}
+};
+
+var person = createPerson();
+console.log(person.getFirstName());
+console.log(person.firstName);
+//"kat" is still accessible for both executions because firstName is available in person object scope still. 
+```
+2. Move the variables out of the scope to hide them and make them inaccessible: this way, the function remembers the variables as closures is formed, but in global scope, we are not able to access those variables. 
+```js
+function createPerson(){
+    var firstName = "kat";
+    var lastName = "Ma";
+    var returnObj = {
+    
+    "getFirstName":function(){
+        return firstName;
+    },
+    "getLastName":function(){
+        return lastName;
+    };
+    return returnObj;
+}
+};
+
+var person = createPerson();
+console.log(person.getFirstName());
+console.log(person.firstName);//undefined
+```
