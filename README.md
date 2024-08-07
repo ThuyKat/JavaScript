@@ -646,7 +646,7 @@ var person = createPerson();
 console.log(person.getFirstName());
 console.log(person.firstName);//undefined
 ```
-```
+
 ## Closures in async callbacks
 - This code prints i from 0 to 9: 
 ```js
@@ -682,3 +682,75 @@ for(i = 0;i<10;i++){
 })();
 }
 ```
+
+## Prototypes for multiple objects
+- To create multiple objects, we can create a function and populate the args : 
+```js
+function createEmployeeObject(firstName,lastName,gender,designation){
+    var newObj = {};
+    newObj.firstName = firstName;
+    newObj.lastName = lastName;
+    newObj.gender = gender;
+    newObj.designation = designation;
+    return newObj;
+}
+var empp = createEmployeeObject("kat","ma","F","sales");
+```
+- All above functions has common features that we need to initiate empty object and return the populated object. In order to make it simpler, JavaScript removes those and turn this type of function into "constructor". Since the variable declaration is removed, we use "this" keyword instead.
+-  When calling a constructor, we add "new" keyword in front of the function call. 
+```js
+// CONSTRUCTOR IN JAVASCRIPT
+function createEmployeeObject(firstName,lastName,gender,designation){
+    // var newObj = {}; -> this is understood and removed
+    this.firstName = firstName; // object's name newObj becomes "this"
+    this.lastName = lastName;
+    this.gender = gender;
+    this.designation = designation;
+    // return newObj; -> this is understood and removed
+}
+var empp = new createEmployeeObject("kat","ma","F","sales"); // new keyword is added
+```
+- Naming convention: name classes with initial-case such as: Employee, Bicycle, Vehicle.. for all functions that are used as constructor
+
+## To default words for every function call: arguments , this
+1.  In Js, there is a concept of global object. The global object depends on which runtime environment we are using to run Js. If we are using browser, the global object is window object. When we call a standalone function directly in global scope,  "this" will be referenced to the global object
+```js
+function a(){
+    console.log("hello"); // prints "hello"
+    console.log(this); // prints Window -> about: blank
+}
+a();
+```
+2. Function as object's property: "this" refered to the  instance of the object
+```js
+var obj = {"prop":"This is the object itself"};
+obj.a = function(){
+    console.log("hello"); // prints "hello"
+    console.log(this); // prints the object 
+}
+obj.a();
+```
+3. Function as a constructor
+```js
+function a(){
+    console.log("hello"); // prints "hello"
+    console.log(this); // prints an empty object
+}
+new a();
+```
+4. Function inside a constructor that uses the constructor's property
+```js
+//function to be called in constructor mode
+function Bicycle(cadence,speed,gear,tirePressure){
+    this.cadence = cadence;
+    this.speed = speed;
+    this.gear = gear;
+    this.tirePressure = tirePressure;
+    this.inflateTires = function(){
+        this.tirePressure += 3;
+    }
+}
+// calling the function in constructor mode
+var b1 = new Bycycle(50,20,4,25);
+b1.inflateTires(); // this.tirePressure -> this refers to instance b1 which has tirePressure = 25
+
