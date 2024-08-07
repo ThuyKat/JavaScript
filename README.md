@@ -753,4 +753,59 @@ function Bicycle(cadence,speed,gear,tirePressure){
 // calling the function in constructor mode
 var b1 = new Bycycle(50,20,4,25);
 b1.inflateTires(); // this.tirePressure -> this refers to instance b1 which has tirePressure = 25
+```
+- Now I want to create a different object called Mechanic and pass the inflateTires function to this object
 
+```js
+function Mechanic(name){
+    this.name = name;
+}
+var mike = new Mechanic("mike");
+mike.inflateTires = b1.inflateTires; 
+mike.inflateTires(); // this will be refered to mike now, how can fix the default reference in Js to make this refers to its original object instead?
+```
+## the call function .call()
+
+```js
+function a(){}
+a.call(); //this is similar to a()
+```
+The difference is call( {} ) take an object as its argument. It binds the object to "this" keyword of function a --> you can choose which object you want to bind this keyword to. 
+
+--> using call function in previous example:
+```js
+function Mechanic(name){
+    this.name = name;
+}
+var mike = new Mechanic("mike");
+mike.inflateTires = b1.inflateTires; 
+mike.inflateTires.call(b1); // execute this we see:
+/*
+* Object{name:"mike",inflateTires:Bicycle/this.inflateTires(),tirePressure:NaN}
+*/
+// now we check b1 again we will see the tirePressure has changed!!
+```
+## prototypes
+- In above code, the function value of inflateTires variable is created everytime a new instance of Bicycle is created
+- Everytime a function is created, there are 2 objects created: the function object and a prototype object
+- To access the prototype object: function_name.prototype -> return the prototype object
+- Lets say we have an empty constructor a(), if we create an instance out of this : 
+```js
+function a(){};
+var myObj = new a(); // print myObj we get the prototype object
+a.prototype.test = "This is the prototype object";
+myObj.__proto__.test; // this print " This is the prototype object"
+a.prototype === myObj.__proto__ ;// return true
+```
+--> accessing using .prototype or _ _proto_ _ , we get the same prototype object.
+- If we try to access a property that does not exist inside object, JS will go and look for it in the prototype object
+
+```js
+myObj.hello; //prints undefined
+myObj.__proto.hello = "this value is from the prototype";
+myObj.hello ;// prints "this value is from the prototype"
+```
+- Now if we assign a new value for "hello" property inside myObj, new property is created that has new value, which is no longer the property from the prototype anymore.
+- If we delete the newly assigned value, myObj.hello again being looked up from the prototype object. 
+
+--> If we access a property from an object myObj.hello, it can be from prototype object or the object itself.
