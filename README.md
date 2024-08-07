@@ -802,10 +802,40 @@ a.prototype === myObj.__proto__ ;// return true
 
 ```js
 myObj.hello; //prints undefined
-myObj.__proto.hello = "this value is from the prototype";
+myObj.__proto__.hello = "this value is from the prototype"; // this is called dunder-proto
 myObj.hello ;// prints "this value is from the prototype"
 ```
 - Now if we assign a new value for "hello" property inside myObj, new property is created that has new value, which is no longer the property from the prototype anymore.
 - If we delete the newly assigned value, myObj.hello again being looked up from the prototype object. 
 
 --> If we access a property from an object myObj.hello, it can be from prototype object or the object itself.
+
+- Multiple objects being created from the same constructor/function --> they share the same prototype object --> they share the same properties contained in prototype object
+
+--> This way we create behaviours applied to multiple objects. 
+
+--> Functions defined in prototype object will not be created multiple times when new instance of object is created.
+
+--> You can add properties to prototype object at runtime and it will be available to all instances ( which is different to Java which you have to define all functions before execution )
+### identify the function/constructor that create an object
+- function .prototype points to prototype object. The prototype object also has method .constructor that points to the function
+
+```js
+function a(){};
+a.prototype ;// this prints the prototype object
+var b = new a();
+b// this prints the prototype object
+var c = a.prototype 
+c.constructor // this prints function a()
+b.constructor //this prints function a()
+```
+-->  we can get the function that create a particular object: using _ _proto_ _ and .constructor
+```js
+b.__proto__.constructor // this returns function a()
+```
+--> this is not recommended to use function this way because we can change the function associated with b._ _proto_ _.constructor
+
+```js
+b.__proto__.constructor = function d(){};
+c.__proto__.consturctor // it prints function d()
+```
