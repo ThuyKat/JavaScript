@@ -847,6 +847,7 @@ mike.inflateTires();
     console.log(b1);
     mike.inflateTires();  // Works again
 ```
+```
 ## prototypes
 - In above code, the function value of inflateTires variable is created everytime a new instance of Bicycle is created
 - Everytime a function is created, there are 2 objects created: the function object and a prototype object
