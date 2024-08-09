@@ -902,8 +902,6 @@ b.__proto__.constructor // this returns function a()
 b.__proto__.constructor = function d(){};
 c.__proto__.consturctor // it prints function d()
 ```
-<<<<<<< Updated upstream
-=======
 ## Global function : Object
 ```js
 console.log(Object) // this print function Object()
@@ -938,5 +936,10 @@ function Employee(name){
 Employee.prototype.getName =  function(){return this.name}; // function is created in prototype object so it will not be created again and again everytime we create an instance of Employee
 var emp1 = new Employee("Jim");
 emp1.getName();
-function Manager(name,dept){this.name = name;this.dept = dept}
->>>>>>> Stashed changes
+function Manager(name,dept){this.name = name;this.dept = dept};
+Manager.prototype.getDept = function(){ return this.dept;};
+var mgr = new Manager("Micheal","Sales");
+
+console.log(mgr.getName()) // return error!
+```
+-  to make mgr to accessible to .getName(),we can either place .getName method inside Object's Prototype OR we make Manager's Prototype points to Employee's Prototype
