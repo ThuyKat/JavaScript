@@ -91,6 +91,39 @@ console.log(product);
     //multiple array spreading
     const array 3 = [10,20,30];
     console.log([...array2,...array3]); // this print [2,3,4,10,20,30]
+    console.log([99,...array2,100,...array3]); // this print [99,2,3,4,100,10,20,30]
 
+    function  getInfo(a,b,...c){ 
+        //NOTE: you need to pass the spread as the last argument
+        // you can just pass (a,...c) and console.log(a,c)
+        console.log(a,b,c);
+        return "kat";
+    }
 
+    console.log(getInfo(1,2,3,4,5,3,4,2,4,3,3,4)); // this will print all numbers
 
+```
+    - map, filter,find,some,every,includes,indexOf,findIndex
+```js
+    const personsArray =[
+        {
+            name:'Person 1',
+            age:30,
+            country:USA,
+        },
+        {
+            name:'Person 2',
+            age:40,
+            country:Russia,
+        },
+        {
+            name:'Person 3',
+            age:50,
+            country:Japan,
+        }
+    ]
+    //now we want to get the array which has only name of all people in personsArray
+    let getAllNames = personsArray.map((singlePerson,index)=>{
+        return singlePerson.name
+    });
+    console.log(getAllNames);
