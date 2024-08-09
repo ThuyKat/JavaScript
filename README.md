@@ -785,6 +785,69 @@ mike.inflateTires.call(b1); // execute this we see:
 */
 // now we check b1 again we will see the tirePressure has changed!!
 ```
+Note: This also can work in the same manner
+```js
+function Mechanic(name){
+    this.name = name;
+    this.inflateTires = function(b1){
+       b1.inflateTires();  
+}
+}
+var mike = new Mechanic("mike");
+mike.inflateTires(b1);
+console.log(b1);
+mike.inflateTires(b1);
+console.log(b1);
+```
+- If we create another object of Bicycle called b2 and call : mike.inflateTires(b2) --> this works as well.
+- In this way we call the inflateTires method of Mechanic, which then call inflateTires() of b1.
+- This only works if we wrap b1.inflateTires() inside a function that takes b1 as its argument. If we dont place b1 as an argument, this wont work if we want to pass, i.e b2 to the function. The only way to go around is re-define b1.
+```js
+function Mechanic(name){
+    this.name = name;
+    this.inflateTires = 
+       b1.inflateTires();
+    
+  	
+}
+var mike = new Mechanic("mike");
+mike.inflateTires;
+console.log(b1);
+mike.inflateTires;
+console.log(b1);
+```
+- In above code, we forgot to wrap b1.inflateTires() inside a function, the second time we use mike.inflateTires gives the same result as the first time.
+- This is because this.inflateTires = b1.inflateTires() immediately execute b1.inflateTires() and assign return value to this.inflateTires.
+- Other way is this:
+```js
+var b1 = new Bicycle(40, 20, 4, 25);
+
+function Mechanic(name) {
+    this.name = name;
+    this.inflateTires = b1.inflateTires;
+}
+
+var mike = new Mechanic("mike");
+mike.inflateTires();
+console.log(b1);
+mike.inflateTires();
+```
+- In the above code, we are copying the reference to the inflateTires method from b1 to the mike object.
+- However, the method inflateTires is likely designed to work with this pointing to an instance of Bicycle (i.e., b1). When you call mike.inflateTires(), this now points to mike, not b1. Since mike is an instance of Mechanic, not Bicycle, any code inside inflateTires that relies on this to reference properties or methods of Bicycle will fail or behave unexpectedly.
+- Again, we need to use .call or .bind:
+  ```js
+  var b1 = new Bicycle(40, 20, 4, 25);
+
+function Mechanic(name) {
+    this.name = name;
+    this.inflateTires = b1.inflateTires.bind(b1);
+}
+
+var mike = new Mechanic("mike");
+mike.inflateTires();  // Now works correctly
+console.log(b1);
+mike.inflateTires();  // Works again
+```
 ## prototypes
 - In above code, the function value of inflateTires variable is created everytime a new instance of Bicycle is created
 - Everytime a function is created, there are 2 objects created: the function object and a prototype object
