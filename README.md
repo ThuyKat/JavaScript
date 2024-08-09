@@ -902,3 +902,41 @@ b.__proto__.constructor // this returns function a()
 b.__proto__.constructor = function d(){};
 c.__proto__.consturctor // it prints function d()
 ```
+<<<<<<< Updated upstream
+=======
+## Global function : Object
+```js
+console.log(Object) // this print function Object()
+```
+- Another way to create new empty object apart from assigning {} is using Object function in constructor mode:
+```js
+var simple = {}
+var obj = new Obj();
+```
+- This Object function in constructor mode also has a prototype object. This is the common object with "simple" object
+```js
+simple.__proto__ === obj.__proto__ //return true
+```
+
+- When we create a function named A, and object instance of function named a, a prototype object is automatically created. This prototype object is actually created using Object() function, and points to Object's prototype
+```js
+function Employee(){};
+var emp = new Employee();
+emp.prop="Employee";
+emp.__proto__.parentProp="Parent of Employee";
+emp.parentProp; // this return "Parent of Employee"
+emp.__proto__.__proto__===Object.prototype; // return true
+Object.prototype.grandparentProp = "grandparent";
+emp.grandparentProp ; //this return "grandparent
+```
+- Using Object.prototype like this we can implement property that available to all objects in our system.
+## Inheritance in JavaScript
+- Now if we want to create a Manager object that inherits properties of Employee but still has its own properties
+```js
+function Employee(name){
+    this.name = name};
+Employee.prototype.getName =  function(){return this.name}; // function is created in prototype object so it will not be created again and again everytime we create an instance of Employee
+var emp1 = new Employee("Jim");
+emp1.getName();
+function Manager(name,dept){this.name = name;this.dept = dept}
+>>>>>>> Stashed changes
