@@ -943,3 +943,5 @@ var mgr = new Manager("Micheal","Sales");
 console.log(mgr.getName()) // return error!
 ```
 -  to make mgr to accessible to .getName(),we can either place .getName method inside Object's Prototype OR we make Manager's Prototype points to Employee's Prototype
+  ![Screenshot 2024-08-09 152422](https://github.com/user-attachments/assets/4f1ed53f-dfc7-4361-b091-fb6c8e18c160)
+
