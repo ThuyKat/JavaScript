@@ -837,16 +837,15 @@ mike.inflateTires();
 - Again, we need to use .call or .bind:
   ```js
   var b1 = new Bicycle(40, 20, 4, 25);
-
-function Mechanic(name) {
-    this.name = name;
-    this.inflateTires = b1.inflateTires.bind(b1);
-}
-
-var mike = new Mechanic("mike");
-mike.inflateTires();  // Now works correctly
-console.log(b1);
-mike.inflateTires();  // Works again
+  
+    function Mechanic(name) {
+        this.name = name;
+        this.inflateTires = b1.inflateTires.bind(b1);
+    }
+    var mike = new Mechanic("mike");
+    mike.inflateTires();  // Now works correctly
+    console.log(b1);
+    mike.inflateTires();  // Works again
 ```
 ## prototypes
 - In above code, the function value of inflateTires variable is created everytime a new instance of Bicycle is created
