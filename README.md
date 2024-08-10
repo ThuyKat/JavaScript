@@ -83,6 +83,48 @@ for(let i =0;i<3;i++){
 ```js
 123 + " 4" // return "1234"
 ```
+## Type conversion
+- String conversion:
+
+```js
+let value = true;
+alert(typeof value); // boolean
+
+value = String(value); // now value is a string "true"
+alert(typeof value); // string
+```
+- Number conversion:
+
+We can use the Number(value) function to explicitly convert a value to a number:
+
+```js
+let str = "123";
+alert(typeof str); // string
+
+let num = Number(str); // becomes a number 123
+
+alert(typeof num); // number
+```
+Numeric conversion rules:
+
+```js
+alert( Number("   123   ") ); // 123
+alert( Number("123z") );      // NaN (error reading a number at "z")
+alert( Number(true) );        // 1
+alert( Number(false) );       // 0
+```
+- Boolean conversion:
+
+```js
+alert( Boolean(1) ); // true
+alert( Boolean(0) ); // false
+
+alert( Boolean("hello") ); // true
+alert( Boolean("") ); // false
+//in JavaScript, a non-empty string is always true.
+alert( Boolean("0") ); // true
+alert( Boolean(" ") ); // spaces, also true (any non-empty string is true)
+```
 ## Equal (== OR ====)
 - We use triple equals for precision check ( value + type match)
 - Equal is just for value check
@@ -1008,3 +1050,31 @@ mgr.__proto__.__proto__ = Employee.prototye
 console.log(mgr.getName()) // now return Micheal!
 ```
 ## Interaction: alert, prompt, confirm
+- Alert: It shows a message and waits for the user to press “OK”.The mini-window with the message is called a modal window. The word “modal” means that the visitor can’t interact with the rest of the page, press other buttons, etc, until they have dealt with the window. In this case – until they press “OK”.
+- Prompt:   
+```js
+// result = prompt(title, [default]);
+let age = prompt('How old are you?', 100);
+
+alert(`You are ${age} years old!`); // You are 100 years old!
+```
+--> It shows a modal window with a text message, an input field for the visitor, and the buttons OK/Cancel. default is optional, it's the initial value for the input field. Title is text showing to user.Prompt is shown,then we get that text in the result. Or user can cancel the input by pressing Cancel or hitting the Esc key, then we get null as the result.
+--> The call to prompt returns the text from the input field or null if the input was canceled.
+--> The second parameter is optional, but if we don’t supply it, Internet Explorer will insert the text "undefined" into the prompt.So, for prompts to look good in IE, we recommend always providing the second argument:
+
+```js
+let test = prompt("Test", ''); // <-- for IE
+```
+- Confirm:
+
+The function confirm shows a modal window with a question and two buttons: OK and Cancel.
+```js
+// result = confirm(question);
+// The result is true if OK is pressed and false otherwise.
+let isBoss = confirm("Are you the boss?");
+
+alert( isBoss ); // true if OK is pressed
+```
+
+
+
