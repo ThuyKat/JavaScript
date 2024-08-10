@@ -83,6 +83,10 @@ for(let i =0;i<3;i++){
 ```js
 123 + " 4" // return "1234"
 ```
+## Nullish coalescing operator
+
+The ?? operator provides a way to choose a defined value from a list of variables. The result of a ?? b is a unless it’s null/undefined, then b.
+
 ## Type conversion
 - String conversion:
 
@@ -453,6 +457,44 @@ Other topics:
 - Asynchronous JavaScript - Callbacks and Promises: because JS is a single threat program, so it is important to write asynchronous program for it to function smoothly
 - Client side frameworks:jQuery, React, AngularJS
 - Sever side framework: Node js - MVC
+
+### Arrow functions
+```js
+let func = (arg1, arg2, ..., argN) => expression;
+
+```
+ it’s the shorter version of:
+ ```js
+ let func = function(arg1, arg2, ..., argN) {
+  return expression;
+};
+```
+more example:
+```js
+let sum = (a, b) => a + b;
+//one argument, then parentheses around parameters can be omitted, making that even shorter.
+let double = n => n * 2;
+//If there are no arguments, parentheses are empty, but they must be present
+let sayHi = () => alert("Hello!");
+//can be used in the same way as Function Expressions.
+let age = prompt("What is your age?", 18);
+
+let welcome = (age < 18) ?
+  () => alert('Hello!') :
+  () => alert("Greetings!");
+
+welcome();
+
+```
+Multi-arrow function: a more complex function, with multiple expressions and statements.We can enclose them in curly braces. The major difference is that curly braces require a return within them to return a value (just like a regular function does).
+```js
+let sum = (a, b) => {  // the curly brace opens a multiline function
+  let result = a + b;
+  return result; // if we use curly braces, then we need an explicit "return"
+};
+
+alert( sum(1, 2) ); // 3
+```
 
 ## Scopes
 Part of program where variables can be accessed
