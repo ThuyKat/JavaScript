@@ -109,21 +109,61 @@ console.log(product);
         {
             name:'Person 1',
             age:30,
-            country:USA,
+            country:'USA',
         },
         {
             name:'Person 2',
             age:40,
-            country:Russia,
+            country:'Russia',
         },
         {
             name:'Person 3',
             age:50,
-            country:Japan,
+            country:'Japan',
         }
     ]
     //now we want to get the array which has only name of all people in personsArray
+    //NOTE1: if you include the curly braces, you must explicitly use the 'return' statement to return a value
+    //NOTE2: map() method always return an array in JavaScript. The length of the new array returned will always be the same as the original array. 
+    //NOTE 3: this is different to Java stream: map() in Java stream is only an intermediate function, we need to use .collect() or .reduce() to get the returned results. map() in Java stream only transform the elements of the stream via a function, and doesn guarantee the same number of elements in its output. 
+
     let getAllNames = personsArray.map((singlePerson,index)=>{
+        console.log(singlePerson,index); // this prints each object and its index
         return singlePerson.name
     });
     console.log(getAllNames);
+    //NOTE 4: when you call console.log(getAllName); you are logging the getAllNames array, which was already populated by the map() method. 
+    //NOTE 5: return can be re-written in literals:
+    return `${singlePerson.name} age is ${singlePerson.age}`
+    // this prints ["Person 1 age is 30","Person 2 age is 40","Person 3 age is 50"]
+
+    //using find() to find person which is from USA and immediately return the object
+    let getPersonFromUSA = personsArray.find((singlePerson,index)=>{
+        return singlePerson.country ==='USA';
+    });
+    console.log(getPersonFromUSA);
+    // using filter() to find all person which is from USA and return all objects satisfy the condition.
+    // using some() will return true if a person object satisfies the condition exist.
+    let checkAge = personsArray.some((singlePerson)=> {
+        return singlePerson.age >40;
+    });
+    console.log(checkAge); //return true which means a person with age .40 exist
+      // using every() will return true if all conditions are satisfied
+    let checkEvery = personsArray.every((singlePerson)=>{
+        return singlePerson.age >40;
+    });
+    console.log(checkEvery); // returns false that there is a person not satisfies the condition. 
+
+    // using include() to check if a specific element exists in the array
+    const fruitsArray =["apple","banana","orange"];
+    console.log(fruitsArray.include("apple"),fruitsArray.indexOf("banana")); // returns true,1
+
+    // using indexOf() to see the current index of the element. if the index is non-exist returns -1
+    console.log(fruitsArray.include("kat"),fruitsArray.indexOf("kat"));// returns false,-1
+
+    // find the index of person from Russia
+    let getIndexOfPersonFromRussia = personsArray.findIndex((singlePerson)=>{
+        return singlePerson.country ==='RUSSIA';
+    });
+    console.log("getIndexOfPersonFromRussia");
+

@@ -19,6 +19,62 @@ a = "hello a"; // no type declaration
 a = null;
 console.log(typeof a);
 ```
+## Declare variable with 'let' and 'const'
+
+```js
+let message ;
+message ="Hello";
+alert(message);
+```
+- Different to const keyword, means “constants”. Variable cannot be reassigned. An attempt to do so would cause an error.
+- We can also declare multiple variables in one line:
+```js
+let user = 'John', age = 25, message = 'Hello';
+```
+- Similar to var, we can assign different value for variable message
+- Different to var, declaring let  twice for 1 variable will triggers a SyntaxError. Var allows you to re-declare the same variable within the same scope without any error
+- Different to var, it does have block scope {}. A let variable is only accessible within the block where it is declared. This means if you declare a varible inside an if statement, it will not be accessible outside that if block.
+- Hoisting: with var, variable can be used before it is declared, but its value will be undefined until the line where it is initialised. It is different to let, variable will not be initialized, you will get a ReferenceError instead
+```js
+console.log(x);
+var x =10;
+```
+- Hoisting creates problem because if we declare a variable with var inside a function, the declaration is moved to the top of that function's scope, but the assignment remains where it was orignally written:
+```js
+function example(){
+    console.log(x);//undefined
+    var x =10;
+    console.log(x);//10
+}
+example();
+```
+- IIFE is created to alleviate this issue of hoisting, to prevent them from polluting the global scope or causing conflicts within loops
+```js
+var x =10;
+(function(){
+    var x =20;
+    console.log(x);//
+})();
+console.log(x);
+```
+```js
+for(var i =0; i<3;i++){
+    (function(j){
+        setTimeOut(function(){
+            console.log(j);
+        },1000);
+    })(i);
+}
+```
+- Above loop using let: let ensures that each iteration of the loop has its own scope for i, so the correct values are logged without needing and IIFE
+```js
+for(let i =0;i<3;i++){
+    setTimeout(function(){
+        console.log(i);
+    },1000);
+}
+```
+- If you declare a var variable globally, it becomes a property of the global object(e.g window), while let will not become property of the global object
 ## Type coercion: 
 - Concatenation with String values
 - Values of all types have an associated Bollean value
@@ -58,9 +114,9 @@ if(d){
 
 ```js
 var person = {
-    "firstName" : "Koushik",
+    "firstName" : "kat",
     "middleName" : null,
-    "lastName" : "Kothagal"
+    "lastName" : "M"
 };
 //if we try to access age property: person.age --> this returns undefined
 // person.middleName --> null
@@ -951,3 +1007,4 @@ mgr.__proto__.__proto__ = Employee.prototye
 
 console.log(mgr.getName()) // now return Micheal!
 ```
+## Interaction: alert, prompt, confirm
