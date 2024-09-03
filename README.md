@@ -349,6 +349,30 @@ console.log("hello");
 }
 f(); // this prints "hello"
 ```
+### Function Declaration vs Function Expression
+Function Expression: a function, created inside an expression or inside another syntax construct. Here, the function is created on the right side of the “assignment expression” =:
+
+// Function Expression
+```js
+let sum = function(a, b) {
+  return a + b;
+};
+```
+---> in above example, it is created when the execution reaches it ( in intepretation phase) and hence, it is only usable from that moment. In contrast, function declaration is initialised during declaration phase, so it can be called or used earlier than it is defined:
+
+```js
+sayHi("John"); // Hello, John
+
+function sayHi(name) {
+  alert( `Hello, ${name}` );
+}
+```
+CASE 1: if you want to use the function when JavaScript starts, use Function Declaration
+---> The Function Declaration sayHi is created when JavaScript is preparing to start the script and is visible everywhere in it.
+---> That gives us more flexibility in code organization, and is usually more readable.
+
+CASE 2: if you want the function to be visible outside of block in strict mode, use Function Expression
+---> Function Declaration has block scope and only visible inside the block ---> 
 ### Function as argument
 ```js
 var f = function (){
@@ -494,6 +518,190 @@ let sum = (a, b) => {  // the curly brace opens a multiline function
 
 alert( sum(1, 2) ); // 3
 ```
+### Optional Chaining
+
+When we want to access inner properties of an object but unsure if they exist. For example: user.address.street
+
+If the property exists, we want to return the value of the property, otherwise accept null value
+
+Normally, it will be done like this for double nested object
+```js
+let user = {}; // user has no address
+
+alert(user.address ? user.address.street ? user.address.street.name : null : null);
+```
+--->That’s why the optional chaining ?. was added to the language. To solve this problem once and for all!
+
+The optional chaining ?. stops the evaluation if the value before ?. is undefined or null and returns undefined.
+
+```js
+let user = {}; // user has no address
+
+alert( user?.address?.street ); // undefined (no error)
+```
+NOTE:
+1. If there’s no variable user at all, then user?.anything triggers an error:
+```js
+// ReferenceError: user is not defined
+user?.address;
+```
+The variable must be declared (e.g. let/const/var user or as a function parameter). The optional chaining works only for declared variables.
+
+2. ?.() is used to call a function that may not exist.
+```js
+let userAdmin = {
+  admin() {
+    alert("I am admin");
+  }
+};
+
+let userGuest = {};
+
+userAdmin.admin?.(); // I am admin
+
+userGuest.admin?.(); // nothing happens (no such method)
+```
+3. Also we can use ?. with delete:
+```js
+delete user?.name; // delete user.name if user exists
+```
+4. We can use ?. for safe reading and deleting, but not writing
+The optional chaining ?. has no use on the left side of an assignment.
+```js
+let user = null;
+
+user?.name = "John"; // Error, doesn't work
+// because it evaluates to: undefined = "John"
+```
+### Asynchronous function: initiate now, finish later
+- Example of asynchronous function
+```js
+function loadScript(src) {
+  // creates a <script> tag and append it to the page
+  // this causes the script with given src to start loading and run when complete
+  let script = document.createElement('script');
+  script.src = src;
+  document.head.append(script);
+}
+```
+- When the script is loaded, we want a function to execute right after --> this is callback function
+```js
+function loadScript(src, callback) {
+  let script = document.createElement('script');
+  script.src = src;
+
+  script.onload = () => callback(script);
+
+  document.head.append(script);
+}
+```
+---> the second argument is a function (usually anonymous) that runs when the action is completed.
+- error handling
+```js
+function loadScript(src, callback) {
+  let script = document.createElement('script');
+  script.src = src;
+
+  script.onload = () => callback(null, script);
+  script.onerror = () => callback(new Error(`Script load error for ${src}`));
+
+  document.head.append(script);
+}
+loadScript('/my/script.js', function(error, script) {
+  if (error) {
+    // handle error
+  } else {
+    // script loaded successfully
+  }
+});
+```
+- The case of loading a sequence of script after the first one --> need to use Promises
+--> Construction of Promises:
+```js
+let promise = new Promise(function(resolve, reject) {
+  // executor (the producing code, "singer")
+});
+```
+-->The function passed to new Promise is called the executor. It is the production code that runs automatically when a new Promise is created.Its arguments resolve and reject are callbacks provided by JavaScript itself.
+
+--> When the executor obtains the result, be it soon or late, doesn’t matter, it should call one of these callbacks:
+
+resolve(value) — if the job is finished successfully, with result value.
+
+reject(error) — if an error has occurred, error is the error object.
+
+- Internal properties of promise: state , result
+![alt text](image.png)
+
+![alt text](image-1.png)
+
+![alt text](image-2.png)
+
+- In case something goes wrong, the executor should call reject. That can be done with any type of argument (just like resolve). But it is recommended to use Error objects (or objects that inherit from Error).
+
+- To summarize, the executor should perform a job (usually something that takes time) and then call resolve or reject to change the state of the corresponding promise object.
+A promise that is either resolved or rejected is called “settled”, as opposed to an initially “pending” promise.
+- The properties state and result of the Promise object are internal. We can’t directly access them. We can use the methods .then/.catch/.finally for that. 
+- Consuming functions can be registered (subscribed) using the methods .then and .catch.
+```js
+promise.then(
+  function(result) { /* handle a successful result */ },
+  function(error) { /* handle an error */ }
+);
+```
+
+```js
+let promise = new Promise(function(resolve, reject) {
+  setTimeout(() => resolve("done!"), 1000);
+});
+
+// resolve runs the first function in .then
+promise.then(
+  result => alert(result), // shows "done!" after 1 second
+  error => alert(error) // doesn't run
+);
+```
+
+```js
+let promise = new Promise(function(resolve, reject) {
+  setTimeout(() => reject(new Error("Whoops!")), 1000);
+});
+
+// reject runs the second function in .then
+promise.then(
+  result => alert(result), // doesn't run
+  error => alert(error) // shows "Error: Whoops!" after 1 second
+);
+```
+- If we’re interested only in successful completions, then we can provide only one function argument to .then:
+```js
+let promise = new Promise(resolve => {
+  setTimeout(() => resolve("done!"), 1000);
+});
+
+promise.then(alert); // shows "done!" after 1 second
+```
+- If we’re interested only in errors, then we can use null as the first argument: .then(null, errorHandlingFunction). Or we can use .catch(errorHandlingFunction), which is exactly the same
+```js
+let promise = new Promise((resolve, reject) => {
+  setTimeout(() => reject(new Error("Whoops!")), 1000);
+});
+
+// .catch(f) is the same as promise.then(null, f)
+promise.catch(alert); // shows "Error: Whoops!" after 1 second
+```
+- The call .finally(f) is similar to .then(f, f) in the sense that f runs always, when the promise is settled: be it resolve or reject. It is to set up a handler for performing cleanup/finalizing after the previous operations are complete.
+
+---> A finally handler “passes through” the result or error to the next suitable handler.
+```js
+new Promise((resolve, reject) => {
+  setTimeout(() => resolve("value"), 2000);
+})
+  .finally(() => alert("Promise ready")) // triggers first
+  .then(result => alert(result)); // <-- .then shows "value"
+  ```
+  --->A finally handler also shouldn’t return anything. If it does, the returned value is silently ignored.The only exception to this rule is when a finally handler throws an error. Then this error goes to the next handler, instead of any previous outcome.
+
 
 ## Scopes
 Part of program where variables can be accessed

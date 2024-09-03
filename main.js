@@ -8,11 +8,11 @@ function renderProducts(getProducts){
 
 async function fetchListOfProducts(){
     try{
-        const apiResponse = await fetch('https://dummyjson.com/products',{method:'GET'})
-        const result = await apiResponse.json();
+        const apiResponse = await fetch('https://dummyjson.com/products',{method:'GET'}) //fetch data
+        const result = await apiResponse.json(); // convert to json
         console.log(result);
         if(result?.products?.length > 0) renderProducts(result?.products);
-    }catch(e){
+    }catch(e){ // error handling
         console.log(e);
     }
 
