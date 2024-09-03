@@ -146,7 +146,7 @@ if(a===c){
     console.log("values are equal"); // not printed
 }
 if(a){
-     console.log("a is true"); // printed because a !=0. same applied if a ="", undefined, null
+     console.log("a is true"); // printed because a !=0. Falsy if a =0,"", undefined, null
 }
 if(d){
      console.log("a is false"); // printed because a == 0
