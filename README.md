@@ -26,8 +26,7 @@ let message ;
 message ="Hello";
 alert(message);
 ```
-- Different to const keyword, means “constants”. Variable cannot be reassigned. An attempt to do so would cause an error.
-- We can also declare multiple variables in one line:
+- Different to const keyword, means “constants”. With const declaration, variable cannot be reassigned. An attempt to do so would cause an error. Let allows reassign variables and declare multiple variables in one line:
 ```js
 let user = 'John', age = 25, message = 'Hello';
 ```
