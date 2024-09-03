@@ -615,6 +615,14 @@ loadScript('/my/script.js', function(error, script) {
   }
 });
 ```
+--->It’s called the “error-first callback” style.
+
+The convention is:
+
+The first argument of the callback is reserved for an error if it occurs. Then callback(err) is called.The second argument (and the next ones if needed) are for the successful result. Then callback(null, result1, result2…) is called.
+
+So the single callback function is used both for reporting errors and passing back results.
+
 - The case of loading a sequence of script after the first one --> need to use Promises
 --> Construction of Promises:
 ```js
