@@ -574,6 +574,39 @@ user?.name = "John"; // Error, doesn't work
 // because it evaluates to: undefined = "John"
 ```
 ### Asynchronous function: initiate now, finish later
+1. Synchronous Functions: executed in order they appear in the code. Each function must complete before the next function starts executing. 
+2. Asynchronous Function: Functions or code blocks that involve asynchronous operation like network requests, setTimeout, reading files which do no block the execution of subsequent code.The JavaScript runtime schedules these operations to be completed later, allowing other code to run in the meantime.
+
+For example:
+```js
+console.log('A');
+setTimeout(()=> console.log('B'),0); // this is asynchronous operation
+console.log('C');
+// output: A,C,B
+```
+3. Order of execution with Promisese:
+- When a promise is created, executor funciton is immedite executed. It runs in order it appears like other Synchronous Code. 
+- The callbacks passed to .then are not executed immediately; instead, they are scheduled to run asynchronously after call stack is cleared ( these are MicroTask Queue). Microtask queue is processed after the current synchronous code but before any other MacroTask Queue such as setTimeout callbacks.
+
+Example: 
+```js
+console.log('Start');
+setTimeout(()=>{
+    console.log('Timeout 1');
+},100);
+let p = new Promise((resolve)=>{
+    console.log('Promise executor');
+    resolve('Resolved');
+});
+p.then((value)=>{
+    console.log(value);
+});
+setTimeout(()=>{
+    console.log('Timeout 2');
+},50);
+console.log('End');
+```
+#### Callback
 - Example of asynchronous function
 ```js
 function loadScript(src) {
@@ -584,7 +617,9 @@ function loadScript(src) {
   document.head.append(script);
 }
 ```
-- When the script is loaded, we want a function to execute right after --> this is callback function
+- When the script is loaded, we want a function to execute right after --> this is callback function. 
+
+---> a callback function is a function that is passed as an argument to another function and is intended to be called later within that function to complete some action. 
 ```js
 function loadScript(src, callback) {
   let script = document.createElement('script');
@@ -622,7 +657,7 @@ The convention is:
 The first argument of the callback is reserved for an error if it occurs. Then callback(err) is called.The second argument (and the next ones if needed) are for the successful result. Then callback(null, result1, result2…) is called.
 
 So the single callback function is used both for reporting errors and passing back results.
-
+#### Promise
 - The case of loading a sequence of script after the first one --> need to use Promises
 --> Construction of Promises:
 ```js
@@ -630,13 +665,55 @@ let promise = new Promise(function(resolve, reject) {
   // executor (the producing code, "singer")
 });
 ```
--->The function passed to new Promise is called the executor. It is the production code that runs automatically when a new Promise is created.Its arguments resolve and reject are callbacks provided by JavaScript itself.
+-->The function passed to new Promise is called the executor. It is the production code that runs automatically when a new Promise is created.Its arguments resolve and reject are callbacks provided by JavaScript itself. These functions are callbacks because they are intended to be called later within the executor function to indicate the outcome of the asynchronous operation.
+
+**Resolve and Reject are functions**
+a. Resolve(value)
+
+Type of argument: any data type including :
+* primitive values: resolve(42), resolve("Success"),resolve(true)
+* Object: resolve({key:"value"})
+* Array: resolve([ 1,2,3])
+* Another Promise or Thenable: resolve(anotherPromise) - if the argument is another promise, the current promise will wait for it to settle and will adopt its state -> current Promise just need Resolve function
+
+```js
+let anotherPromise = new Promise((resolve)=>{
+    setTimeout(()=> resolve("Another promise resolved"),1000);
+});
+let myPromise = new Promise((resolve)=>{
+    resolve(anotherPromise); // passing another promise
+});
+myPromise.then((value)=> console.log(value)); //"Another promise resolved"
+```
+
+b. Reject(reason) : when called, it rejects the promise and passes the reason to the next catch() handler or the onRejected handler in the then() chain
+
+Type of argument: any data type, but it's common to pass:
+* Error Object: reject(new Error("Something went wrong"))
+
+When we create an instance of Error object using new Error(message_string) the default behaviour is that name of error is "Error"- represent type of error; message property is whatever you provided inside the bracket. 
+
+A custome error type can be created: 
+```js
+class CustomError extends Error{
+    constructor(message){
+        super(message);
+        this.name= 'CustomError';
+    }
+}
+
+let customError = new CustomError("This is a custom error");
+console.log(customError.name); //"CustomError
+console.log(customError.message);//"This is a custom error"
+```
+* Strings: reject("Operation failed")
+* object: reject({code:500,message:"Internal Server Error"}) 
 
 --> When the executor obtains the result, be it soon or late, doesn’t matter, it should call one of these callbacks:
 
-resolve(value) — if the job is finished successfully, with result value.
+resolve(value) — if the job is finished successfully, with result value. This is invoked when the operation completes successfullly to mark the promise as fulfilled and pass a result down to promise chain
 
-reject(error) — if an error has occurred, error is the error object.
+reject(error) — if an error has occurred, error is the error object. It is used to make the promise as rejected and pass the error or reason for failure down the promise chain
 
 - Internal properties of promise: state , result
 ![alt text](image.png)
@@ -644,6 +721,102 @@ reject(error) — if an error has occurred, error is the error object.
 ![alt text](image-1.png)
 
 ![alt text](image-2.png)
+
+- Simplified structure of Promise and .then:
+```js
+function Promise(executor){
+    this._state = 'pending';
+    this._result= undefined;
+    this._onFulfilled = [];
+    this._onRejected =[];
+
+    const resolve = (value) => {
+        if(this._state === 'pending'){
+            this._state = 'fulfilled';
+            this._result = value;
+            this._onFulfilled.forEach(callback => callback(value)); //execute the callback function defined in .then
+        }
+    };
+    const reject = (reason) => {
+        if(this._state === 'pending' ){
+            this._state = 'reject';
+            this._result = reason;
+            this._onRejected.forEach(callback => callback(reason));
+
+        }
+    };
+    executor(resolve,reject);
+}
+Promise.prototype.then = function(onFulfilled,onRejected){
+    ...
+    if(this._state === 'fulfilled'){
+        onFulfilled(this._result);
+    }else if(this._state === 'rejected'){
+        if(onRejected)onRejected(this._value);  
+    }else{
+        this._onFulfilled.push(onfulfilled); // if promise is pending, queue onFulfilled
+        if(onRejected){
+            this._onRejected.push(onRejected); // queue onRejected if provided
+        };
+    }
+}
+```
+- "then" actually does two things: it executes or queue up functions in onFulfilled or onRejected arrays, and return  a new Promise object. So the full function of "then" will look like this: 
+
+ ---> it creates  variables called fulfilHandler and rejectHandler. In each of this variable, it checks: 
+    
+    --> if onFulfilled is not a function, it immediately pass the value and state to the new Promise object
+    
+    --> if onFulfilled is a function, it executes that function. Now if the function returns a Promise, result.then(resolve, reject) means the code will wait for the executor inside the result Promise to complete its execution. it will use the value that the inner Promise (result) resolves with, this value is then passed to the resolve function of the outer Promise.The outer Promise is determined by the state of the result object (the inner Promise). Remember that resolve is actually a callback function that does 3 taks: change the state of Promise object, store the value and execute callbacks functions in the onFulfilled queue.
+```js
+Promise.prototype.then = function(onFulfilled, onRejected) {
+    return new Promise((resolve, reject) => {
+        const fulfillHandler = (value) => {
+            if (typeof onFulfilled !== 'function') {
+                resolve(value);  // Pass through the value if no onFulfilled
+            } else {
+                try {
+                    const result = onFulfilled(value);
+                    if (result instanceof Promise) {
+                        result.then(resolve, reject);  // Handle returned promises
+                    } else {
+                        resolve(result); // Pass through the value if onFulfilled is not a promise
+                    }
+                } catch (error) {
+                    reject(error);
+                }
+            }
+        };
+
+        // Similar logic for rejectHandler...
+
+        if (this._state === 'fulfilled') {
+            setTimeout(() => fulfillHandler(this._value), 0);
+        } else if (this._state === 'rejected') {
+            // Handle rejection...
+        } else {
+            this._onFulfilled.push(fulfillHandler);
+            // Queue rejectHandler...
+        }
+    });
+};
+```
+---> notice that promise can still be in pending mode when .then is called. Eventhough executor function is synchronously executed, it can contains asynchronous code inside such as setTimeout.
+
+---> In this scenario, promise is in pending mode when .then is called and the callbacks functions added later by .then will be pushed to the arrays, waiting to be executed once the state of promise object is confirmed. 
+
+Example:
+```js
+const p = new Promise((resolve,reject) =>{
+    setTimeout(()=>{
+        resolve('Resolve after 1 second');
+    },1000);
+});
+//At this point, the promise 'p' is still pending
+p.then(value ->{
+    console.log(value); //This will log 'Resolved after 1 second' after the timeout
+});
+```
 
 - In case something goes wrong, the executor should call reject. That can be done with any type of argument (just like resolve). But it is recommended to use Error objects (or objects that inherit from Error).
 
@@ -710,7 +883,71 @@ new Promise((resolve, reject) => {
   ```
   --->A finally handler also shouldn’t return anything. If it does, the returned value is silently ignored.The only exception to this rule is when a finally handler throws an error. Then this error goes to the next handler, instead of any previous outcome.
 
+#### Thenable
+A handler may return not exactly a promise, but a so-called “thenable” object – an arbitrary object that has a method .then
 
+```js
+class Thenable {
+  constructor(num) {
+    this.num = num;
+  }
+  then(resolve, reject) {
+    alert(resolve); // function() { native code }
+    // resolve with this.num*2 after the 1 second
+    setTimeout(() => resolve(this.num * 2), 1000); // (**)
+  }
+}
+
+new Promise(resolve => resolve(1))
+  .then(result => {
+    return new Thenable(result); // (*)
+  })
+  .then(alert); // shows 2 after 1000ms
+```
+
+It can have an extended set of methods, but also be compatible with native promises, because they implement .then.This feature allows us to integrate custom objects with promise chains without having to inherit from Promise.
+
+-->The Promise system treats the Thenable object similarly to a Promise.
+
+-->It executes the then method of the Thenable object, providing its own resolve and reject functions.
+
+-->The resolution of the Promise chain is delayed until the Thenable.then method calls resolve or reject
+
+The initial Promise resolves with 1.
+The first .then receives 1 and returns a new Thenable object with result (which is 1).
+The Promise system recognizes that the returned value is a thenable (it has a then method).
+Instead of passing this thenable directly to the next .then, the Promise system will call the then method of your Thenable object.
+**Inside this "then" method:**
+It alerts the resolve function (which is provided by the Promise system).
+It sets a timeout to call resolve(this.num * 2) after 1 second.
+The Promise system waits for either resolve or reject to be called inside the Thenable.then method.
+After 1 second, resolve(this.num * 2) is called, resolving the Promise with the value 2.
+This resolved value (2) is then passed to the final .then(alert), which displays it.
+#### Why its good practice to return a Promise in onFulfilledHandler??
+- In a Promise chain, each `then()` method returns a new Promise automatically. However, the behaviour of this new Promise depends on what you return inside the 'then()' callback: return a value -> the new Promise resolves with that value, return a Promise, the new Promise adopts the state and value of the returned Promise, if dont return anything the new Promise resolves with undefined
+- The purpose of returning a new Promise: wrapping operations in a new Promise can control when the Promise chian continues(i.e, inject setTimeout() inside executor of the new Promise).This allows to incorportate non-Promise-based asynchronous operations into our Promise chain, ensuring that each step completes before moving to the next.
+
+Example: 
+```js
+fetch('/article/promise-chaining/user.json')
+  .then(response => response.json())
+  .then(user => fetch(`https://api.github.com/users/${user.name}`))
+  .then(response => response.json())
+  .then(githubUser => new Promise(function(resolve, reject) { // (*)
+    let img = document.createElement('img');
+    img.src = githubUser.avatar_url;
+    img.className = "promise-avatar-example";
+    document.body.append(img);
+
+    setTimeout(() => {
+      img.remove();
+      resolve(githubUser); // (**)
+    }, 3000);
+  }))
+  // triggers after 3 seconds
+  .then(githubUser => alert(`Finished showing ${githubUser.name}`));
+  ```
+  
 ## Scopes
 Part of program where variables can be accessed
 
@@ -1242,10 +1479,11 @@ myObj.hello ;// prints "this value is from the prototype"
 function a(){};
 a.prototype ;// this prints the prototype object
 var b = new a();
-b// this prints the prototype object
+b// this prints the prototype object. when inspecting b, it appears to show properties fromthe prototype, but b is not hte prototype itself, it just has access to the prototype's properties
 var c = a.prototype 
 c.constructor // this prints function a()
 b.constructor //this prints function a()
+// eventhough b is an instance of a, b.constructor is equivalent to b.__proto__.constructor, which ultimately points ot a.prototype.constructor.
 ```
 -->  we can get the function that create a particular object: using _ _proto_ _ and .constructor
 ```js
