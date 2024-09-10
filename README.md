@@ -871,7 +871,64 @@ let promise = new Promise((resolve, reject) => {
 // .catch(f) is the same as promise.then(null, f)
 promise.catch(alert); // shows "Error: Whoops!" after 1 second
 ```
+OR: this will also work the same: ---> the code of a promise executor and promise handlers has an invisible try..catch around it. 
+
+```js
+new Promise((resolve, reject) => {
+  throw new Error("Whoops!");
+}).catch(alert); // Error: Whoops!
+```
+If we throw inside a .then handler, that means a rejected promise, so the control jumps to the nearest error handler.
+```js
+new Promise((resolve, reject) => {
+  resolve("ok");
+}).then((result) => {
+  throw new Error("Whoops!"); // rejects the promise
+}).catch(alert); // Error: Whoops!
+```
+Catch also catches accidental errors in handlers or executors
+```js
+new Promise((resolve, reject) => {
+  resolve("ok");
+}).then((result) => {
+  blabla(); // no such function
+}).catch(alert); // ReferenceError: blabla is not defined
+```
+If we throw inside .catch, then the control goes to the next closest error handler. 
+For unhandled promise rejections or errors, JS engine generates a global error
+
+NOTE: CATCH cannot directly catch errors from asynchronous operation within a Promise, unless they are explicitly handled using 'reject'. Since the Promise executor runs synchronously. Once its finishes executing, the Promise is considered settled even if it contains asynchronous operations. For example, in below code, the catch wont be able to catch the error:
+```js
+new Promise(function(resolve, reject) {
+  setTimeout(() => {
+    throw new Error("Whoops!");
+  }, 1000);
+}).catch(alert);
+```
+---> to handle this error, we should use 'reject' function:
+```js
+new Promise(function(resolve, reject) {
+  setTimeout(() => {
+    reject(new Error("Whoops!"));
+  }, 1000);
+}).catch(alert);
+```
+---> Or we can wrap in try-catch:
+```js
+new Promise(function(resolve, reject) {
+  setTimeout(() => {
+    try {
+      throw new Error("Whoops!");
+    } catch (error) {
+      reject(error);
+    }
+  }, 1000);
+}).catch(alert);
+```
+
+
 - The call .finally(f) is similar to .then(f, f) in the sense that f runs always, when the promise is settled: be it resolve or reject. It is to set up a handler for performing cleanup/finalizing after the previous operations are complete.
+
 
 ---> A finally handler “passes through” the result or error to the next suitable handler.
 ```js
@@ -947,7 +1004,53 @@ fetch('/article/promise-chaining/user.json')
   // triggers after 3 seconds
   .then(githubUser => alert(`Finished showing ${githubUser.name}`));
   ```
-  
+#### Fetch
+- fetch(url) : make a network request to the url and returns a promise. The promise resolves with a response object when the remote server responds with headers, but before the full response is downloaded -> need to call response.text() or response.json() to get a promise that resolves when full text is downloaded. This promise object of response.text() is settled with value of the text. 
+```js
+fetch('/article/promise-chaining/user.json')
+  // .then below runs when the remote server responds
+  .then(function(response) {
+    // response.text() returns a new promise that resolves with the full response text
+    // when it loads
+    return response.text();
+  })
+  .then(function(text) {
+    // ...and here's the content of the remote file
+    alert(text); // {"name": "iliakan", "isAdmin": true}
+  });
+  ```
+
+#### Async functions
+- async keyword when placed before a function means : a function always returns a promise. 
+```js
+async function f() {
+  return 1;
+  //or we can write: return Promise.resolve(1) which does the same thing - makes a resolved promise with the given value.
+}
+
+f().then(alert); // 1
+```
+- await keyword : means wait until promise settles and returns it result
+```js
+async function f() {
+
+  let promise = new Promise((resolve, reject) => {
+    setTimeout(() => resolve("done!"), 1000)
+  });
+
+  let result = await promise; // wait until the promise resolves (*)
+  //promise.then(alert) does the same thing that "done" will be displayed after 1 seconds. However its different in how it is executed. 
+
+  alert(result); // "done!"
+}
+
+f();
+```
+---> with await, the function pauses at the await line until the promise resolves before moving to the next line of code, while with then(), the function continues executing immediately, and the then() callback is scheduled to run later when the promise resolves.
+
+---> await also extracts the resolved value of the promise allowing us to work with it directly
+
+---> it makes asynchronous code look and behave more like synchronous code within the async function. 
 ## Scopes
 Part of program where variables can be accessed
 

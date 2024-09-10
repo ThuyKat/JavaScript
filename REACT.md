@@ -125,7 +125,7 @@ console.log(product);
     //now we want to get the array which has only name of all people in personsArray
     //NOTE1: if you include the curly braces, you must explicitly use the 'return' statement to return a value
     //NOTE2: map() method always return an array in JavaScript. The length of the new array returned will always be the same as the original array. 
-    //NOTE 3: this is different to Java stream: map() in Java stream is only an intermediate function, we need to use .collect() or .reduce() to get the returned results. map() in Java stream only transform the elements of the stream via a function, and doesn guarantee the same number of elements in its output. 
+    //NOTE 3: this is different to Java stream: map() in Java stream is only an intermediate function, we need to use .collect() or .reduce() to get the returned results. map() in Java stream only transform the elements of the stream via a function, and doesn't guarantee the same number of elements in its output. 
 
     let getAllNames = personsArray.map((singlePerson,index)=>{
         console.log(singlePerson,index); // this prints each object and its index
