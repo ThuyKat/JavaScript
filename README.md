@@ -1341,7 +1341,150 @@ var person = createPerson();
 console.log(person.getFirstName());
 console.log(person.firstName);//undefined
 ```
+## ES6 modules
+- A module is just a script file. It can load other module using import and can be exported to other module outside it. 
+- As module support special keywords and features, we must tell the browser that a script should be treated as a moudle by using < script type ="module" >. The difference between appending normal script and importing module is that modules have their own scope and dont auto add variables to the global scope. When importing module, we enable module-specific features: 
+1. Top-level await: 
 
+* Enable modules to act like a big async functions
+* allows await to be used directly in the global scope of module
+
+2. Strict mode by default
+*  avoid global variables to be created by accident. ( this is called silent errors)
+```js
+    // Non-strict mode
+x = 3.14; // Accidentally creates a global variable
+
+// Strict mode
+"use strict";
+x = 3.14; // Throws ReferenceError: x is not defined
+```
+* Avoid duplicated parameter names:
+```js
+// Non-strict mode
+function sum(a, a, c) { // Duplicate parameter names allowed
+    return a + b + c; // This actually uses the last 'a' parameter
+}
+
+// Strict mode
+"use strict";
+function sum(a, a, c) { // SyntaxError: Duplicate parameter name not allowed
+    // ...
+}
+```
+* Prohibit synctax likely to be used in future ECMAScript versions:
+```js
+// Non-strict mode
+var interface = 'audio'; // 'interface' might be a future keyword, but this works
+
+// Strict mode
+"use strict";
+var interface = 'audio'; // SyntaxError: Unexpected strict mode reserved word
+```
+* Preventing 'this' from being auto-bound to the global object
+```js
+// Non-strict mode
+function foo() {
+    console.log(this); // Window (in browser)
+}
+
+// Strict mode
+"use strict";
+function foo() {
+    console.log(this); // undefined
+}
+```
+3. Deferred by default ( like adding defer to a regular script)
+- Regular Scripts will be executed as soon as they appear unless marked with async or defer -> block HTML parsing
+- Meanwhile, module do not block HTML because they have defer attribute by default. They are executed only after the entire HTMl doc has been parsed. 
+--> Modules guarantee that execution happens after parsing, while regular scripts may execute during parsing causing blockage.
+
+4. Dependency management
+- Specify which part of other file that is imported and used: import { add } from './math.js'. Meanwhile, regular scripts rely on the global scope and the order of script tags.
+- Module keeps variables private unless exported while regular scripts add variable to the global scope once script is exposed. 
+```js
+// module.js
+const x = 10;
+export const getX = () => x;
+
+// main.js
+import { getX } from './module.js';
+console.log(getX()); // 10
+console.log(x);      // ReferenceError: x is not defined
+```
+5. Static and dynamic import with import keyword
+```js
+//static import - only avail for modules
+// Can only be used at the top level of a module
+import { add } from './math.js';
+
+//dynamic import - improve the old way of using loadScript function which returns a Promise
+// Can be used anywhere, returns a promise
+const mathModule = await import('./math.js');
+console.log(mathModule.add(2, 3)); // 5
+
+//instead of : 
+// Dynamically load a script
+function loadScript(src) {
+    return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.onload = resolve;
+        script.onerror = reject;
+        document.head.appendChild(script);
+    });
+}
+
+loadScript('math.js').then(() => {
+    console.log(add(2, 3)); // 5
+});
+```
+6. Modules are executed only once so it maintain the state of variables
+```js
+// counter.js
+let count = 0;
+export function increment() {
+    count++;
+    console.log(count);
+}
+
+// main.js
+import { increment } from './counter.js';
+import { increment as inc } from './counter.js';
+
+increment(); // Logs: 1
+inc();       // Logs: 2
+```
+Meanwhile, in normal script: if we append the script twice:
+```xml
+<script src="counter.js"></script>
+<script src="counter.js"></script>
+```
+```js
+// counter.js
+let count = 0;
+function increment() {
+    count++;
+    console.log(count);
+}
+
+// In browser console
+increment(); // Logs: 1
+increment(); // Logs: 1 (count is reset because the script ran twice)
+```
+7. this is undefined in module( not bound to global object) while in regular script it refers to global object
+```js
+// module.js
+console.log(this); // undefined
+
+export function checkThis() {
+    console.log(this); // undefined (in strict mode)
+}
+
+// main.js
+import { checkThis } from './module.js';
+checkThis();
+```
 ## Closures in async callbacks
 - This code prints i from 0 to 9: 
 ```js

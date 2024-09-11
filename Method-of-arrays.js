@@ -96,7 +96,7 @@ console.log(copiedWholeArray);
 // check if element exists including NaN
     console.log(`existance of element Kiwi in array is : ${myArray.includes("Kiwi")}`);
 
-// loop over arrays' value
+// loop over arrays' value. If array is empty, looping wont happen!
 for (fruit of myArray){
     console.log(fruit);
 }
