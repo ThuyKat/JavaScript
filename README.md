@@ -1346,7 +1346,7 @@ console.log(person.firstName);//undefined
 - As module support special keywords and features, we must tell the browser that a script should be treated as a moudle by using < script type ="module" >. The difference between appending normal script and importing module is that modules have their own scope and dont auto add variables to the global scope. When importing module, we enable module-specific features: 
 1. Top-level await: 
 
-* Enable modules to act like a big async functions
+* Enable modules to act like a big async functions ( defer by default)
 * allows await to be used directly in the global scope of module
 
 2. Strict mode by default
@@ -1439,7 +1439,9 @@ loadScript('math.js').then(() => {
     console.log(add(2, 3)); // 5
 });
 ```
-6. Modules are executed only once so it maintain the state of variables
+6. Modules are executed only once 
+--> this allows changes made in 1st script that imports module visble in 2nd script that also imports module
+--> this not only allows us to maintain state of the varible consitently across all scripts, but also allow us to configure modules
 ```js
 // counter.js
 let count = 0;
@@ -1790,6 +1792,89 @@ mgr.__proto__.__proto__ = Employee.prototye
 
 console.log(mgr.getName()) // now return Micheal!
 ```
+### Function in JavaScript vs Function in Java
+- We are not able to define a function inside another function in Java, we can only call the function defined outside. However, in JS, we are able to define a function inside another function. This is because all functions in JS are basically objects. 
+- When a function is defined inside another function, the outer function can provide access to inner function by return the inner function. If multiple functions exist, we can return an object which has all inner functions as its properties { function1, function2, ...func}. Closures will be formed on all variabled defined inside the outer function.
+- The outer function can act like a constructor. In this sense, we use "this" keyword infront of all inner functions and variables to provide accessity to these inner functions. The return statement is disregarded. 
+```js
+function Counter() {
+    let count = 0;
+    this.increment = function() {
+        count++;
+        console.log(count);
+    };
+    this.decrement = function() {
+        count--;
+        console.log(count);
+    };
+}
+
+const myCounter = new Counter();
+myCounter.increment(); // Output: 1
+myCounter.increment(); // Output: 2
+myCounter.decrement(); // Output: 1
+```
+- ES6 provides a morden approach where "class" keyword is used. It just looks like Java format : class MyClass{ ...}. All methods declared inside this class will be bound to prototype object of MyClass -> MyClass.prototype.method, which makes them available to all instance of MyClass. Among these method, we have Constructor() method which we use "this" keyword to define all variables bound to MyClass. Format of ES6 class: 
+```js
+class ClassName {
+  // Constructor method
+  constructor(param1, param2) {
+    this.property1 = param1;
+    this.property2 = param2;
+    this._privateProperty = 'I am private';
+  }
+
+  // Instance method
+  instanceMethod() {
+    console.log('This is an instance method');
+  }
+
+  // Getter method
+  get someValue() {
+    return this.property1;
+  }
+
+  // Setter method
+  set someValue(newValue) {
+    this.property1 = newValue;
+  }
+
+  // Static method
+  static staticMethod() {
+    console.log('This is a static method');
+  }
+
+  // Private method (proposed, not yet widely supported)
+  #privateMethod() {
+    console.log('This is a private method');
+  }
+
+  // Public method that uses the private method
+  usePrivateMethod() {
+    this.#privateMethod();
+  }
+}
+
+// Inheritance
+class ChildClass extends ClassName {
+  constructor(param1, param2, extraParam) {
+    super(param1, param2); // Call parent constructor
+    this.extraProperty = extraParam;
+  }
+
+  // Override parent method
+  instanceMethod() {
+    super.instanceMethod(); // Call parent method
+    console.log('This is an overridden method');
+  }
+
+  // Child-specific method
+  childMethod() {
+    console.log('This is a child-specific method');
+  }
+}
+```
+
 ## Interaction: alert, prompt, confirm
 - Alert: It shows a message and waits for the user to press “OK”.The mini-window with the message is called a modal window. The word “modal” means that the visitor can’t interact with the rest of the page, press other buttons, etc, until they have dealt with the window. In this case – until they press “OK”.
 - Prompt:   

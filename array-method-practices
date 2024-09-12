@@ -1,0 +1,70 @@
+
+
+
+
+function camelize(str){
+    let str_array = str.split('-');
+    
+    for(let i=1;i<str_array.length;i++){
+        let newEl = str_array[i].charAt(0).toUpperCase() + str_array[i].slice(1);
+          str_array.splice(i,1,newEl);
+          
+    }
+    return str_array.join('');
+}
+
+function filterRange(arr,a,b){
+    return arr.filter((el) => (el>=a && el <b));
+}
+
+function filterRangeInPlace(arr,a,b){
+    for(let i=0;i<arr.length;i++){
+        if(arr[i]>b | arr[i] <a){
+            arr.splice(i,1);
+            i--;
+        }
+    }
+    return arr;
+}
+let arrS = [5, 2, 1, -10, 8];
+
+arrS.sort((a,b) => -(a-b));
+console.log(arrS);
+
+function copySorted(arr){
+
+    let copiedArr = arr.slice();
+    copiedArr.sort();
+    return copiedArr;
+}
+
+function calculate(str){
+    return str.split(' ').reduce(((sum,currentVal)=> (Number(currentVal)?  sum+Number(currentVal) : sum)),0);
+}
+
+function addMethod(name,func){
+
+}
+
+console.log(camelize("background-color"));
+let arr = [5,3,8,1];
+console.log(filterRange(arr,1,4));
+console.log(filterRangeInPlace(arr,1,4));
+
+let unsortedArr = ["HTML", "JavaScript", "CSS"];
+console.log(copySorted(unsortedArr));
+console.log(unsortedArr);
+console.log(calculate("3 + 7"));
+
+//chaining multiple functions- function composition" : this is a function that takes a group of function as argument
+// and return a function that takes x as argument
+// which returns a result which is the result of executing each function from right to left.
+// each function takes y as argument and assign the executing result back to y with initial value of y is x
+const compose = (...fns) => (x) => fns.reduceRight((y, f) => f(y), x);
+
+const add3 = (x) => x + 3;
+const multiply2 = (x) => x * 2;
+const subtract1 = (x) => x - 1;
+
+const computeValue = compose(subtract1, multiply2, add3);
+console.log(computeValue(5)); // 15

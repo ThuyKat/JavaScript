@@ -88,6 +88,7 @@ console.log(copiedWholeArray);
 
 // get index of element except NaN otherwise return -1 ( looking from left to right)
     console.log( `index of Banana element is: ${myArray.indexOf("Banana")}`);
+    //if we want the search to include NaN, use: 
     console.log(`index of Banana element using arr.findIndex is: ${myArray.findIndex((item) => item === 'Banana')}`)
     //looking from right to left
     console.log( `index of Banana element is: ${myArray.lastIndexOf("Banana")}`);
@@ -141,7 +142,7 @@ console.log("reversing order of array");
 // transform whole array into a single result using calculation performed on its elements: with initial value to avoid error with empty array
 let myNumArray = [1,2,3,4,6,7,4];
 console.log("using reduce to calculate the sum of numeric elements ");
-
+//array.reduce(callback(accumulator, currentValue[, index[, array]])[, initialValue]) -> 2 parts: callback function and initial value
 console.log(myNumArray.reduce((sum,current,index) => { 
     console.log("current index is "+ index + " and current sum is "+ (sum+current));
     return (sum + current);} ,0));

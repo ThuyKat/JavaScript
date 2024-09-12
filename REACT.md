@@ -166,4 +166,89 @@ console.log(product);
         return singlePerson.country ==='RUSSIA';
     });
     console.log("getIndexOfPersonFromRussia");
+```
+## REACT MERCHANISM
+#### React Components as Modules: 
+- In React, each component is typically defined in a module -> import, export functionality which is features of modules
+- When you import modules, and place it inside a function, these are NOT nesting functions in the traditional sense, but individual files running in parallel
 
+---> The parent-child relationship in React is about rendering and prop passing, not about Javascript function nesting
+- When a component is imported, only component's definition is imported, not its state. State exists only when the component is rendered and mounted. Each time a component is rendered, a new instance is created with its own state. The parent module doesn't have direct access to these instances'states. 
+```js
+// ChildComponent.js
+import React, { useState } from 'react';
+
+export default function ChildComponent() {
+  const [childState, setChildState] = useState('initial');
+  return <div>{childState}</div>;
+}
+
+// ParentComponent.js
+import React from 'react';
+import ChildComponent from './ChildComponent';
+
+export default function ParentComponent() {
+  // This doesn't work:
+  console.log(ChildComponent.childState); // undefined
+
+  return <ChildComponent />;
+}
+```
+
+Here's a simplified timeline:
+
+1. Modules are parsed (including parent and child components)
+2. React starts rendering the component tree
+3. Parent component is instantiated
+4. Parent component's render method is called
+5. Child component is instantiated as part of parent's render
+6. Child component's state is initialized
+7. Child component is rendered
+--> the child's state is defined and initialized after the parent component has already started its rendering process
+--> the parent cannot use the child's state in its initialization or initial render because the child's state doesn't exist yet.
+
+---> this is different to Java as components are initialised when rendered not when application starts.
+
+#### React Component Lifecycle
+1. Mount
+- constructor: initialised state and binds methods
+- render(): return JSX to be rendered.
+- componentDidMount(): runs after the component is inserted into the DOM
+2. Update
+- shouldComponentUpdate(): Decides if the component should re-render.
+- render(): Re-renders with new state or props.
+- componentDidUpdate(): Runs after the update is reflected in the DOM.
+3. Unmount
+- componentWillUnmount(): Cleanup before the component is removed from the DOM.
+
+---> React: Has a specific 'render' phase where the component's UI is determined. Components can mount, update, and unmount multiple times during the application's runtime.
+Java: No inherent render concept; object state is always "current". Objects typically go through their lifecycle once (create-use-destroy).
+
+#### Passing Props
+a. Attributes: These are passed as props
+
+```js
+<MyComponent name="John" age={30} isActive={true} />
+```
+
+b.Children: What goes between the opening and closing tags of a component - this is a special prop
+```js
+<MyComponent>
+  <h1>Hello</h1>
+  <p>This is a child element</p>
+</MyComponent>
+```
+---> All of these (both attributes and children) end up in the props object that the component receives.
+
+#### Accessing props
+- The content between opening and closing tags is accessed via props.children:
+```js
+function MyComponent(props) {
+  return <div>{props.children}</div>;
+}
+```
+#### State management
+- useState
+- useEffect
+- useContext
+- useReducer
