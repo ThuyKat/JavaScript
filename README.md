@@ -19,6 +19,38 @@ a = "hello a"; // no type declaration
 a = null;
 console.log(typeof a);
 ```
+## Primitive types and Reference types
+1. Primitive type: Immutable, pass by values --> means their values cannot be chagned once created. When it is passed to a function or assigned to a new variable, it's actually the copy that was passed. Any changes made to this value do not affect the original value. 
+```js
+let num =10;
+function modifyPrimitive(value){
+    value=20;
+}
+modifyPrimitive(num);
+
+console.log(num); // output: 10( unchanged)
+```
+When we assign a new value for  num, and we get a new value when we print num, it doesn't mean that value has changed, we just make num points to the new value
+```js
+num = 20; 
+console.log(num) //output: 20
+```
+To prove this, we can use the Object.is() method to check if two values are exactly the same. This is particularly useful for demonstrating immutability of primitives.
+```js
+let x = 5;
+let y = x;
+
+console.log(Object.is(x, y));  // true - x and y reference the same value
+
+x = 10;
+
+console.log(Object.is(x, y));  // false - x now references a different value
+console.log(y);  // 5 - the original value remains unchanged
+```
+
+2. Reference types: mutable, pass by reference -> means their value can be changed. When it is passed to a function or assigned to a new variable, what gets passed is a reference ( address) to the original object in heap memory. Any changes made this the object through this reference affect the original object. 
+
+3. Difference to Java: 
 ## Declare variable with 'let' and 'const'
 
 ```js
@@ -299,8 +331,9 @@ index is where the loop starts.
 4. Date.getYear, Date.getMonth,Date.getDay,Date.getHour...second / and set as well
 
 ## Wrapper Objects in Java
-- String is of primitive type. However we can use String.length --> this indicates that it is converted to String object
+- String is of primitive type. However we can use String.length --> this indicates that it is converted to String object. JavaScript automatically wraps primitives in objects when methods are called on them (autoboxing).
 - 4 types of wrapper objects: String, Boolean, Number and Symbol
+
 ## Functions
 
 1. Functions can be written in literal form
@@ -327,6 +360,7 @@ sayHello("thuy","morning"); // "hello thuy time of day is morning" printed
 - If we dont provide enough arguments, the undeclared arguments return undefined
 - If we provide more than enough arguments, the non-exist arguments wil be ignore
 - To return a value, just add return keyword. Result of a function with return keyword can be assigned to a variable
+- If a function does not return anything, it returns undefined by default.
 ```js
 function sayHello(name, timeOfDay){
     return "hello" + name + "time of day is" + timeOfDay;
