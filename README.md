@@ -552,6 +552,8 @@ let sum = (a, b) => {  // the curly brace opens a multiline function
 
 alert( sum(1, 2) ); // 3
 ```
+### Arrow functions vs Normal Function: when to use??
+
 ### Optional Chaining
 
 When we want to access inner properties of an object but unsure if they exist. For example: user.address.street
@@ -1168,7 +1170,7 @@ b =a
 
 --> affect how js deals with error
 
---> if you use a variable without declaring it, it's ok to do write operation not read operation
+--> if you use a variable without declaring it, it's ok to do write operation not read operation ( in non-strict mode only)
 
 ```js
 foo =10; // run -> no error!
