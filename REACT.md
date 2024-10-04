@@ -173,7 +173,17 @@ console.log(product);
 - When you import modules, and place it inside a function, these are NOT nesting functions in the traditional sense, but individual files running in parallel
 
 ---> The parent-child relationship in React is about rendering and prop passing, not about Javascript function nesting
-- When a component is imported, only component's definition is imported, not its state. State exists only when the component is rendered and mounted. Each time a component is rendered, a new instance is created with its own state. The parent module doesn't have direct access to these instances'states. 
+- When a component is imported, only component's definition is imported, not its state. 
+**State initialization**
+In class components, state is typically initialized in the constructor, which runs before rendering.In functional components using hooks, useState is called during the initial render, but the state value is available immediately
+**State availability**
+- State exists as soon as it's initialized, which is before the component is fully rendered and mounted. However, the component cannot interact with the DOM using this state until after mounting
+**Lifecycle and state**
+- The initial state is used during the first render.
+- componentDidMount (for class components) or useEffect with an empty dependency array (for functional components) run after the initial render and mounting
+**State updates:**
+- State updates scheduled before or during the initial render will be processed before the browser updates the screen.
+-  When a component is first mounted, a new instance is created with its initial state.On subsequent re-renders, React does not create a new instance of the component. Instead, it updates the existing instance. The state is not recreated from scratch on every render unless explicitly reset. The parent module doesn't have direct access to these instances'states. 
 ```js
 // ChildComponent.js
 import React, { useState } from 'react';
@@ -210,16 +220,18 @@ Here's a simplified timeline:
 ---> this is different to Java as components are initialised when rendered not when application starts.
 
 #### React Component Lifecycle
-1. Mount
+In class-based React components, componentDidMount, componentDidUpdate, and componentWillUnmount are called lifecycle methods. These methods are part of the React component lifecycle and serve specific purposes: allow developers to hook into different stages of a component's lifecycle to perform specific actions or optimizations, manage side effects and cleanup.
+
+1. Mount (initial rendering)
 - constructor: initialised state and binds methods
 - render(): return JSX to be rendered.
-- componentDidMount(): runs after the component is inserted into the DOM
-2. Update
+- componentDidMount(): runs after the component is inserted into the DOM/mounted; used for side effects like data fetching, DOM manipulation, or setting up subscriptions;runs only once in the component's lifecycle, after the first render
+2. Update ( re-render)
 - shouldComponentUpdate(): Decides if the component should re-render.
 - render(): Re-renders with new state or props.
-- componentDidUpdate(): Runs after the update is reflected in the DOM.
-3. Unmount
-- componentWillUnmount(): Cleanup before the component is removed from the DOM.
+- componentDidUpdate(): Runs after the update is reflected in the DOM ( re-rendered due to state or prop changes). It takes previous props and state as parameters for comparison
+3. Unmount (removed from DOM and destroyed)
+- componentWillUnmount(): Cleanup before the component is removed from the DOM(unmounted and destroyed). It is used for cleanup tasks like cancelling network requests, removing event listeners, or clearing timers. It runs only once, right before the component is removed from the DOM.
 
 ---> React: Has a specific 'render' phase where the component's UI is determined. Components can mount, update, and unmount multiple times during the application's runtime.
 Java: No inherent render concept; object state is always "current". Objects typically go through their lifecycle once (create-use-destroy).

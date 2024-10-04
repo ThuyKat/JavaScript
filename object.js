@@ -75,5 +75,5 @@ listAllProperties(personObject);
 
 //cloning object: Object.assign(dest,...src) --> for multiple srcs + modify existing objects while spread operator is one at a time + create new copies without modifying original
 
-
+//note: cloning be aware of reference type property -> pass by reference -> structuredClone(object)
 
