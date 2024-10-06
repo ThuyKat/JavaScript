@@ -2,8 +2,23 @@
 // properties, methods
 // dot/square bracket
     //square bracket is use if we want to bring existing variables inside the object
+    //square bracket is used for computed properties
+let fruit = prompt("Which fruit to buy?", "apple");
+
+let bag = {
+  [fruit]: 5, // the name of the property is taken from the variable fruit
+};
+
+alert( bag.apple ); // 5 if fruit="apple"
+    //We can use more complex expressions inside square brackets:
+let fruit1 = 'apple';
+let bag1 = {
+  [fruit1 + 'Computers']: 5 // bag.appleComputers = 5
+};
 // delete myObject.property
     //check if props is in an objects: ===undefined vs 'in' operator??
+    //To walk over all keys of an object: for(let key in object)
+// integer-property: string that is able to convert to-and-from number form without a change -> affect the order of properties inside object: number ordering, or creation order
 //object destructuring : unpack object into variables. Left side: corresponding properties - list of variable names in a bracket- in object-like pattern
 //--Right side: existing object that we want to split into variables
 //-- dont know how many props are there in objs -> rest pattern

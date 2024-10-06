@@ -1938,5 +1938,27 @@ let isBoss = confirm("Are you the boss?");
 alert( isBoss ); // true if OK is pressed
 ```
 
+## Browser environment
+A host environment : browser, web-servers, etc. provides its own objects and functions in addition to running JS. 
+
+### Browser 
+- root object is called 'window' - built in object of browser, provides variables and function that are available everywhere(global object. ) - represents browser window and provides methods to control it: window.innerHeight
+- DOM ( Document Object Model) comprises all page objects, each accessed through 'document' keyword as entry point. i.e: document.body.style.background = 'black'
+- BOM ( Browser Object Model) comprises objects provided by browser for working with everything except document. i.e: location object ( URL info), navigator object ( OS system info and browser info), browsers' methods to communicate with user: alert, prompt, confirm
+
+Nodejs: root object is called 'global'
+
+## DOM
+- Every HTML tag is an object, nested tags are children of the enclosing one
+- Browser will auto create html tag, body tag, add required head while generating the DOM
+- 4 common node types while workign with DOM out of 12: document, HTML-tags, text-nodes, comments
+  ```js
+  document.documentElement //html tag
+  document.body //body tag
+  document.head //head tag
+  document.body.childNodes // list of all direct children nodes including text nodes of body
+  document.body.firstChild  === document.body.childNodes[0]
+  document.body.lastChild === document.body.childNodes[document.body.childNodes.length -1]
+  document.body.hasChildNodes() // check if there is any child node
 
 
