@@ -273,6 +273,60 @@ if(myObj === myObj2){
 }
 
 ```
+## Shallow copy vs deep copy object/array
+
+- A shallow copy creates a new object or array, but the nested objects or elements are still references to the same memory locations as the original.
+1. Object.assign() for shallow copy (not deep):
+   ```javascript
+   const shallowCopy = Object.assign({}, originalObject);
+   ```
+  
+
+2. Spread operator for shallow copy (not deep):
+   ```javascript
+   const shallowCopy = {...originalObject};
+   ```
+
+- A deep copy creates entirely new copies of nested objects, so changes to the copy (at any level) never affect the original. Here are the main ways to create a deep copy of an object or array:
+
+1. Using JSON methods:
+   ```javascript
+   const deepCopy = JSON.parse(JSON.stringify(originalObject));
+   ```
+   Pros: Simple, works for nested structures
+   Cons: Doesn't handle functions, undefined values, or circular references
+
+2. Recursive function:
+   ```javascript
+   function deepCopy(obj) {
+     if (typeof obj !== 'object' || obj === null) return obj;
+     const newObj = Array.isArray(obj) ? [] : {};
+     for (let key in obj) {
+       newObj[key] = deepCopy(obj[key]);
+     }
+     return newObj;
+   }
+   ```
+   Note: Arrays in JavaScript are objects, and they do have keys. The keys are the numeric indices of the array elements.
+   Pros: Handles nested structures, can be customized
+   Cons: May be slower for large objects, doesn't handle circular references by default
+
+3. Using a library like Lodash:
+   ```javascript
+   const deepCopy = _.cloneDeep(originalObject);
+   ```
+   Pros: Robust, handles many edge cases
+   Cons: Adds a dependency to your project
+
+4. Using the structuredClone() method (newer browsers):
+   ```javascript
+   const deepCopy = structuredClone(originalObject);
+   ```
+   Pros: Handles circular references, most data types
+   Cons: Not supported in older browsers
+
+For deep copying, methods 1, 2, 3, or 4 are recommended depending on  specific needs and constraints. The JSON method (1) is often sufficient for simple cases, while the recursive function (2) or a library like Lodash (3) offer more control and handle more complex scenarios. The structuredClone() method (4) is a good choice for modern environments.
+
 
 ## Array
 
@@ -315,6 +369,30 @@ myArray.forEach(function(item,index,array){
 });
 
 index is where the loop starts. 
+## When to use for..in and when to use for..of to iterate over objects and arrays???
+1. for...in loop:
+- Iterates over enumerable properties of an object.
+- Used primarily for objects, but can also be used with arrays (though not recommended for arrays because it can include some unwanted and rarely used arrays' properties).
+- Iterates over all enumerable properties, including those inherited from the prototype chain.
+- Returns the keys (property names) of the object.
+2. for...of loop:
+- Iterates over iterable objects (including arrays, strings, maps, sets, etc.).
+- Used primarily for collections like arrays.
+- Iterates only over the values of the iterable, not properties.
+- Returns the values directly, not the keys or indices.
+```js
+let arr = ['a', 'b', 'c'];
+
+// for...in
+for (let index in arr) {
+    console.log(index); // Logs: "0", "1", "2"
+}
+
+// for...of
+for (let value of arr) {
+    console.log(value); // Logs: "a", "b", "c"
+}
+```
 ## Math object -> a built in object that has properties and methods for math constants and functions
 1. Math.abs(x) -> returns the absolute value of a number
 2. Math.ceil(x) -> round up a number
@@ -1087,6 +1165,38 @@ f();
 ---> await also extracts the resolved value of the promise allowing us to work with it directly
 
 ---> it makes asynchronous code look and behave more like synchronous code within the async function. 
+
+#### Await is used inside async function
+Placing await inside async functions gains benefits of both synchronous and asynchronous operation: streamline but unblocking 
+
+```js
+async function example() {
+  console.log('Start');
+  const result = await someAsyncOperation();
+  console.log('Result:', result);
+  console.log('End');
+}
+
+function someAsyncOperation() {
+  return new Promise(resolve => {
+    setTimeout(() => resolve('Done'), 1000);
+  });
+}
+
+example();
+console.log('After calling example');
+```
+---> Output: 
+Start
+After calling example
+Result:Done
+End
+
+--->while await blocks execution within the async function, it doesn't block the entire program
+
+---> NOTE:
+1. Await can only be used inside async functions or at the top level of modules. It cannot be used in regular synchronous functions or at the top level of regular scripts
+2. 
 ## Scopes
 Part of program where variables can be accessed
 
@@ -1954,11 +2064,170 @@ Nodejs: root object is called 'global'
 - 4 common node types while workign with DOM out of 12: document, HTML-tags, text-nodes, comments
   ```js
   document.documentElement //html tag
-  document.body //body tag
-  document.head //head tag
+  document.body === document.head.nextSibling //body tag
+  document.head.nextElementSibling
+  document.head === document.head.previousSibling //head tag
+  document.head.previousElementSibling
+  document.body.parentElement //html tag
   document.body.childNodes // list of all direct children nodes including text nodes of body
+  document.body.children // list of all children elements ( exclude texts and comments )
   document.body.firstChild  === document.body.childNodes[0]
+  document.body.firstElementChild
+  document.body.lastElementChild 
   document.body.lastChild === document.body.childNodes[document.body.childNodes.length -1]
   document.body.hasChildNodes() // check if there is any child node
+  ```
+- childNodes is not an array, but array-like iterable object. For example: for(let node of document.body.childNodes){...}
+- childNodes can be converted into a real array to perform array methods: 
+ ---> using methods  Array.from() or the spread operator [...].
+
+### Navigation properties for tables
+```js
+table.caption
+table.tHead
+table.tFoot
+table.tBodies
+table.rows // collection of <tr> elements of table
+tbody.rows // the collection of <tr> inside
+tr.cells // the collection of <td> and <th> inside the given <tr>
+tr.sectionRowIndex // index of <tr> inside the enclosing <thead>/<tbody>/<tfoot>
+tr.rowIndex // index of <tr> inside table as a whole
+td.cellIndex // index of cell inside enclosing <tr>
+```
+
+Example:
+```js
+  // get td with "two" (first row, second column)
+  let td = table.rows[0].cells[1];
+  td.style.backgroundColor = "red"; // highlight it
+
+```
+## Navigation with id : document.getElementById(id)
+- All methods "getElementsBy*" return a live collection. Such collections always reflect the current state of the document and “auto-update” when it changes.
+## Navigation with css selector: document.querySelectorAll(css_selector)
+- In contrast to getElementById, querySelectorAll returns a static collection. It’s like a fixed array of elements.
+- Note:  The call to elem.querySelector(css) returns the first element for the given CSS selector.The result is the same as elem.querySelectorAll(css)[0 ]
+
+Example:
+```css
+<ul>
+  <li>The</li>
+  <li>test</li>
+</ul>
+<ul>
+  <li>has</li>
+  <li>passed</li>
+</ul>
+<script>
+  let elements = document.querySelectorAll('ul > li:last-child');
+
+  for (let elem of elements) {
+    /* // "test", "passed" */
+    alert(elem.innerHTML); 
+  }
+</script>
+```
+
+## Checking if any matches the given CSS-selector : elem.matches(css-selector)
+
+```js
+<a href="http://example.com/file.zip">...</a>
+<a href="http://ya.ru">...</a>
+
+<script>
+  // can be any collection instead of document.body.children
+  for (let elem of document.body.children) {
+    if (elem.matches('a[href$="zip"]')) {
+      alert("The archive reference: " + elem.href );
+    }
+  }
+</script>
+```
+## Looks for the nearest ancestor that matches the CSS-selector: elem.closest(css-selector)
+
+
+```html
+<h1>Contents</h1>
+
+<div class="contents">
+  <ul class="book">
+    <li class="chapter">Chapter 1</li>
+    <li class="chapter">Chapter 2</li>
+  </ul>
+</div>
+
+<script>
+  let chapter = document.querySelector('.chapter'); // LI
+
+  alert(chapter.closest('.book')); // UL
+  alert(chapter.closest('.contents')); // DIV
+
+  alert(chapter.closest('h1')); // null (because h1 is not an ancestor)
+</script>
+```
+## Check if element A contains element B: elemA.contains(elemB)
+## Properties of Nodes (inbuilt)
+- Check nodeName and tagName : i.e document.body.nodeName , document.body.tagName
+- innerHTML: to get HTML inside the element as a String. i.e: document.body.innerHTML = '< b > test < /b > . NOTE: content will be erased (src, imag, etc) then re-written so be cautious when doing this
+- outerHTML: get the HTML inside the element and the element itself. NOTE: writing to outerHTML does not change the element, it replaces the element in the DOM, but if you print the outerHTML element it returns the old value.
+- nodeValue/data:  reading the content of text / comment node .ie: document.body.firstChild.data
+- textContent: read the text inside an element. It allows to write text the safer compared to innerHTML
+```html
+<div id="elem1"></div>
+<div id="elem2"></div>
+
+<script>
+  let name = prompt("What's your name?", "<b>Winnie-the-Pooh!</b>");
+
+  elem1.innerHTML = name; // tags become tags so we see the bold Winnie-the-Pooh!
+  elem2.textContent = name; // get as text only <b>Winnie-the-Pooh!</b> not bold text
+</script>
+```
+- hidden : specifies if an element is visible(true) or not(false)
+Example: Blinking element
+```html
+<div id="elem">A blinking element</div>
+
+<script>
+  setInterval(() => elem.hidden = !elem.hidden, 1000);
+</script>
+```
+- value: to get the value inside input, select and textarea tags
+- href : the href value of a tag
+- id : the value of id attribute, for all elements
+
+```html
+<input type="text" id="elem" value="value">
+
+<script>
+  alert(elem.type); // "text"
+  alert(elem.id); // "elem"
+  alert(elem.value); // value
+</script>
+```
+## Properties created from attributes of elements
+- Browser generates DOM elements, elements'attributes become properties of DOM object
+
+    --> if the div is < div id ="my_div"> and div = document.body.firstElementchild, that means document.body.firstElementChild.id = "my_div" --> Browser recognises standard attributes and creates DOM properties. 
+
+    --> If an attribute is non-standard, there wont be a DOM property for it. To access such attribute, we use: 
+        * elem.attributes : get a collection of objects with name and value properties.
+        * elem.hasAttribute(name) : checks for attribute existence
+        * elem.getAttribute(name) : gets the value
+        * elem.setAttribute(name,value)
+        * elem.removeAttribute(name)
+
+```js
+console.log(document.body.querySelector("div").attributes)
+// Output : NamedNodeMap {0: class, 1: id, class: class, id: id, length: 2}
+```
+    --> DOM properties and methods behave just like those of regular JS objects, they can have any value: object, function, etc
+    --> Features: names are not case-sensitive and values are always strings even if we assign 123 to it
+
+
+
+    
+
+
 
 

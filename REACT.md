@@ -225,11 +225,14 @@ In class-based React components, componentDidMount, componentDidUpdate, and comp
 1. Mount (initial rendering)
 - constructor: initialised state and binds methods
 - render(): return JSX to be rendered.
-- componentDidMount(): runs after the component is inserted into the DOM/mounted; used for side effects like data fetching, DOM manipulation, or setting up subscriptions;runs only once in the component's lifecycle, after the first render
+- componentDidMount(): runs after the component is inserted into the DOM/mounted ; used for side effects like data fetching, DOM manipulation, or setting up subscriptions;runs only once in the component's lifecycle, after the first render
+**Compare with useEffect**: Both componentDidMount and useEffect (with empty deps) run after the initial render and paint, so it doesn not block the rendering. However, this is also the reason why we often need to handle the "loading" state in our components.The initial render will always happen with the initial state, before any data fetching or side effects occur.
 2. Update ( re-render)
 - shouldComponentUpdate(): Decides if the component should re-render.
 - render(): Re-renders with new state or props.
 - componentDidUpdate(): Runs after the update is reflected in the DOM ( re-rendered due to state or prop changes). It takes previous props and state as parameters for comparison
+**Compare with useEffect**: ComponentDidUpdate runs after DOM is updated but before component is painted. However, useEffect runs after component is painted. useEffect is designed to run asynchronously after the paint, to avoid blocking the visual update.However, useEffect's timing is not guaranteed. In some cases, it may run before the paint:f a state update occurs in a useLayoutEffect, it can cause useEffect to run before paint, or effects triggered by user interactions (like clicks) may run before paint.For operations that must occur synchronously after DOM mutations but before paint, React provides useLayoutEffect, which has timing similar to componentDidMount/componentDidUpdate
+**importantly**: React guarantees that all useEffect callbacks from the previous render will run before starting a new render cycle. 
 3. Unmount (removed from DOM and destroyed)
 - componentWillUnmount(): Cleanup before the component is removed from the DOM(unmounted and destroyed). It is used for cleanup tasks like cancelling network requests, removing event listeners, or clearing timers. It runs only once, right before the component is removed from the DOM.
 

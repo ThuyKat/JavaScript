@@ -8,24 +8,24 @@ console.log('0' == 0); // true -> it converts one to another which is not right
 //add element(s)
     //at the end
 myArray.push('Kiwi');
-console.log(myArray);
+console.log( "add 1 element at the end: "+ myArray);
 myArray.push("Dragon Fruit", "Pineapple")
-console.log(myArray);
+console.log("add 2 element at the end: "+ myArray);
     //at the beginning
 myArray.unshift('Orange');
-console.log(myArray);
+console.log("add 1 element at the beginning: "+myArray);
     // of other arrays --> this create a new array out of the original ones
 let myNewArray = myArray.concat("concat1","concat2");
-console.log(myNewArray);
+console.log("concat other array"+ myNewArray);
     // at an index
 myArray.splice(1,0,"Mandarine");
-console.log(myArray);
+console.log("add element at particular index: "+ myArray);
     //fill with an repeating value from start-index to end-index
 myArray.fill("apple",3,6);
-console.log(myArray);
-    //copy from start-index to end-index and inject those in target index
+console.log("fill with an repeating value from start-index to end-index: "+ myArray);
+    //copy from start-index to end-index and inject those in target index: maintain length
 console.log("testing copyWithin")
-myArray.copyWithin(5,0,2);
+myArray.copyWithin(5,0,2); // from index 5 inject elements from 0 to 2 up to the length of array
 console.log(myArray);
 
 //delete element(s)
@@ -57,7 +57,7 @@ console.log(myArray);
 //copy element(s) --> it creates a new copied array
     //at an index to an index
 let copiedArray = myArray.slice(0,1);
-console.log(copiedArray);
+console.log("copiedArray :" + copiedArray);
     //whole array
 let copiedWholeArray = myArray.slice();
 console.log(copiedWholeArray);
@@ -131,7 +131,6 @@ console.log(transformedArray);
 // reverse array 
 console.log("reversing order of array");
     console.log(myArray.reverse()); // print the same as myArray.reverse() then console.log(myArray) because it returns the reversed array after operation done
-    
     console.log(myArray);
 
 //split a string into array of characters : myString.split('') --> length control? 
