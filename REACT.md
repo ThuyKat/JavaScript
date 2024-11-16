@@ -7,6 +7,17 @@ console.log(a&&b);
 // it checks for a, if a is true then it continues checking b
 //if a is false then return false without checking for b
 ```
+NOTE: the logical OR operator (||) in JavaScript can be used for short-circuit evaluation/ set default value. For example: 
+```js
+setCartItems(localStorage.getItem('cartItem') || [])
+```
+    --> If localStorage.getItem('cartItem') returns a value that is truthy (not null, undefined, 0, false, NaN, or an empty string), that value is used and the expression short-circuits, meaning the right side ([]) is not evaluated.
+    --> If localStorage.getItem('cartItem') returns a falsy value (which in this case would typically be null if the item doesn't exist in local storage), the expression continues to evaluate the right side, which is an empty array [].
+    -->The empty array [] is then used as the default value. This helps handle potential null or undefined values.
+    --> This approach is particularly useful in scenarios where you want to ensure you're always working with a valid data structure, even when the data might not exist in storage.
+
+    
+
 - Template literals
 ```js
 let firstName = "John";
