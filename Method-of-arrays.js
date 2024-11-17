@@ -58,6 +58,9 @@ console.log(myArray);
     //at an index to an index
 let copiedArray = myArray.slice(0,1);
 console.log("copiedArray :" + copiedArray);
+    // slice(0) accepts negative indexing: below code will take last 2 elements
+let copiedArray2 = myArray.slice(-2);
+
     //whole array
 let copiedWholeArray = myArray.slice();
 console.log(copiedWholeArray);

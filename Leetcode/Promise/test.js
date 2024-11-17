@@ -20,4 +20,5 @@ let result = Add([[1,2],[3,4]])
 console.log(result)
 let result2=Add([[],[]])
 console.log(result2)
-
+const arrayMethods = Object.getOwnPropertyNames(Array.prototype);
+console.log(arrayMethods);
