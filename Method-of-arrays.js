@@ -108,7 +108,7 @@ for (fruit of myArray){
 // for (fruit in myArray){
 //     console.log(fruit);
 // }
-    //multiple arrays : print each array
+    //multiple arrays : print each array - forEach always returns undefined, it is used for iteration and side effects and not for transforming arrays. 
 [myArray,myArray2].forEach((item,index,array) => {
     console.log(`${item} is at index ${index} in ${array}`);
 });
