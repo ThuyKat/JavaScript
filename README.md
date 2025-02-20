@@ -2052,7 +2052,9 @@ alert( isBoss ); // true if OK is pressed
 A host environment : browser, web-servers, etc. provides its own objects and functions in addition to running JS. 
 
 ### Browser 
-- root object is called 'window' - built in object of browser, provides variables and function that are available everywhere(global object. ) - represents browser window and provides methods to control it: window.innerHeight
+- root object is called 'window'
+   - built in object of browser, provides variables and function that are available everywhere(global object. ) 
+   - represents browser window and provides methods to control it: window.innerHeight
 - DOM ( Document Object Model) comprises all page objects, each accessed through 'document' keyword as entry point. i.e: document.body.style.background = 'black'
 - BOM ( Browser Object Model) comprises objects provided by browser for working with everything except document. i.e: location object ( URL info), navigator object ( OS system info and browser info), browsers' methods to communicate with user: alert, prompt, confirm
 
@@ -2168,7 +2170,7 @@ Example:
 ## Check if element A contains element B: elemA.contains(elemB)
 ## Properties of Nodes (inbuilt)
 - Check nodeName and tagName : i.e document.body.nodeName , document.body.tagName
-- innerHTML: to get HTML inside the element as a String. i.e: document.body.innerHTML = '< b > test < /b > . NOTE: content will be erased (src, imag, etc) then re-written so be cautious when doing this
+- innerHTML: to get HTML inside the element as a String. i.e: document.body.innerHTML = '< b > test < /b >' . NOTE: content will be erased (src, imag, etc) then re-written so be cautious when doing this
 - outerHTML: get the HTML inside the element and the element itself. NOTE: writing to outerHTML does not change the element, it replaces the element in the DOM, but if you print the outerHTML element it returns the old value.
 - nodeValue/data:  reading the content of text / comment node .ie: document.body.firstChild.data
 - textContent: read the text inside an element. It allows to write text the safer compared to innerHTML

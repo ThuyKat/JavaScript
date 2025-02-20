@@ -1,6 +1,8 @@
 // create an array
 let myArray = ['Banana','Apple'];
 let myArray2 = new Array('Banana','Apple');
+let myArray3 = new Array(2).fill('Banana','Apple') // only use the first elemetn to create array, 'Apple' is ignored
+console.log(myArray3)
 //comparing arrays
 console.log(myArray == myArray2); // false -> dont compare with  ==
 console.log('0' == 0); // true -> it converts one to another which is not right
