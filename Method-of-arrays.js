@@ -72,6 +72,7 @@ console.log(copiedWholeArray);
     let lastElement = myArray.at(-1);
     console.log(lastElement);
     // at an index
+
     // satisfy certain criteria -> return the first found element form left to right. If it returns true, the search is stopped, the item is returned
         //if we assign directly: foundElement =  myArray.find(...), this will returns only the item - Orange
         // if we call foundElement separately like below and assign the value once found, it can store multiple props like an object. Use return true to stop the find operation
@@ -91,7 +92,7 @@ console.log(copiedWholeArray);
     let matchedElements = myArray.filter(item => {if(item === 'Orange') {count = count +1; return true}});
     console.log(`${count} matched elements: ${matchedElements}`);
 
-// get index of element except NaN otherwise return -1 ( looking from left to right)
+// get index of first found element except NaN otherwise return -1 ( looking from left to right)
     console.log( `index of Banana element is: ${myArray.indexOf("Banana")}`);
     //if we want the search to include NaN, use: 
     console.log(`index of Banana element using arr.findIndex is: ${myArray.findIndex((item) => item === 'Banana')}`)

@@ -470,7 +470,8 @@ let sum = function(a, b) {
   return a + b;
 };
 ```
----> in above example, it is created when the execution reaches it ( in intepretation phase) and hence, it is only usable from that moment. In contrast, function declaration is initialised during declaration phase, so it can be called or used earlier than it is defined:
+---> in above example, it is created when the execution reaches it ( in intepretation phase) and hence, it is only usable from that moment. In contrast, function declaration is initialised during declaration phase, so it can be called or used earlier than it is defined
+
 
 ```js
 sayHi("John"); // Hello, John
@@ -480,11 +481,19 @@ function sayHi(name) {
 }
 ```
 CASE 1: if you want to use the function when JavaScript starts, use Function Declaration
----> The Function Declaration sayHi is created when JavaScript is preparing to start the script and is visible everywhere in it.
----> That gives us more flexibility in code organization, and is usually more readable.
+--->The Function Declaration sayHi is created when JavaScript is preparing to start the script and is visible everywhere in it.
+---> Hoisted: Available throughout the scope, even before the function is defined.
+---> in strict mode inside blocks (like if, for, or {} blocks), Function Declarations are block-scoped. This is not the case in non-strict mode, where function declarations can “leak” out of the block and become function-scoped — but this behavior is inconsistent across environments, so it's best not to rely on it.
+---> Gives us more flexibility in code organization, and is usually more readable.
+---> Good for top-level or globally needed functions.
+
 
 CASE 2: if you want the function to be visible outside of block in strict mode, use Function Expression
----> Function Declaration has block scope and only visible inside the block ---> 
+---> Not hoisted: It's created at runtime, so you can't use it before it's defined.
+---> Function Expressions (e.g., const sayHi = function() {}) are always block-scoped when declared inside blocks. It is more consistent, do not change their behaviour based on strict or not-strict mode. Their scope is determined where the variable is declared, not by the mode. 
+---> Still accessible outside of blocks if declared with var, let, or const at the right scope.
+---> Used when you need more control (e.g., assigning to a variable or passing as a value).
+
 ### Function as argument
 ```js
 var f = function (){
@@ -1326,7 +1335,67 @@ variable c is created at global scope. --> always use var to declare variable
 var myName ="";
 myname ="thuy"; // myname wont be created and it throws error
 ```
+
+### What is Strict Mode?
+
+Strict mode is a feature in JavaScript that allows you to opt in to a restricted variant of the language. It helps you write cleaner, more secure, and error-free code.
+
+To enable strict mode, use:
+
+```javascript
+'use strict';
+```
+
 - It applies in the scope you declare "use strict" either in function or global
+
+---
+
+### Key Features and Behavior Differences
+
+| Behavior                          | Non-Strict Mode            | Strict Mode             |
+| --------------------------------- | -------------------------- | ----------------------- |
+| Assigning to undeclared variables | ✅ Allowed (creates global) | ❌ Throws ReferenceError |
+| Duplicating parameter names       | ✅ Allowed                  | ❌ SyntaxError           |
+| `this` in non-method functions    | `window` (in browser)      | `undefined`             |
+| Deleting non-deletable properties | ❌ Fails silently           | ❌ Throws TypeError      |
+| Function declarations in blocks   | May leak outside the block | Block-scoped only       |
+| Octal literals (e.g., `012`)      | ✅ Allowed                  | ❌ SyntaxError           |
+
+---
+
+### Why Use Strict Mode?
+
+* Catches common coding bloopers
+* Prevents creation of global variables
+* Makes debugging easier
+* Disallows certain syntax likely to be defined in future JavaScript versions
+* Encourages best practices and more readable code
+
+---
+
+### Example
+
+```javascript
+'use strict';
+
+function test() {
+  x = 10; // ❌ ReferenceError: x is not defined
+}
+
+test();
+```
+
+In non-strict mode, this would have created a global variable `x`. In strict mode, it throws an error, helping you avoid hard-to-track bugs.
+
+---
+
+### Notes
+
+* Function **declarations inside blocks** are block-scoped **only in strict mode**.
+* Strict mode does **not affect function expressions** — they already follow block scoping unless assigned to a variable declared in an outer scope.
+
+Using strict mode is a good habit, especially for larger projects or when learning JavaScript fundamentals.
+
 
 ## Hoisting
 - No matter where you declare the variable with 'var', since it is used for compilation step, it will always be read first eventhough you declare them at last in your script
