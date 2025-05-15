@@ -4,11 +4,11 @@
 2. Browser looks into each tage in HTML and converts them into objects. Its like < div > tag is parents object of < p > tag. This creates a DOM - Document Object Model tree. The browser breaks the tree and render the view based on it. Different to HTML, with JS, we have chance to modify the nodes of DOM tree : add new nodes, remove nodes, edit notes. This changes the view rendered by the browser. JS allows us to execute dynamic DOM tree on browser
 3. JS is used for client side web development: with jQuery, AngularJS, React; it also used for server side development: with Node Js, Express; browser extension, desktop, mobile, IOT applications
 
-## Variable: declaration (var) and definition (=)
+## Variable: declaration (var - function-scoped variable) and definition (=)
 - Declaration: no type declaration required. 
 - Common type: number ( double, no integers - this is all floating point numbers), string ( no char type, only String type), boolean, undefined, null, symbol
 - When we just declare the variable, its value is undefined (not yet filled). When we intend to leave the value empty, we define it as null ( not available). 
-- the typeof operator: return type of a variable. Note: type of null is object. 
+- the typeof operator: return type of a variable. Note: type of null is object, type of undefined is undefined. So to check if something is null use === . The reason why we dont use == because null == undefined.
 ```js
 var a = 5;
 var b = 10;
@@ -19,6 +19,25 @@ a = "hello a"; // no type declaration
 a = null;
 console.log(typeof a);
 ```
+- When you declare a variable using var in the global scope (outside any function), it becomes a property of the global object:
+```js
+var myVar = 42;
+console.log(window.myVar); // 42 (in browser)
+```
+In this case, the variable name becomes a key on the global object (window in browsers, global in Node.js).
+- var has function scope, it doesnt care about block
+```js
+function test() {
+  if (true) {
+    var x = 10;
+  }
+  console.log(x); // ✅ 10 — accessible outside the block
+}
+test();
+```
+- For var, the variable is hoisted and initialized with undefined.
+
+
 ## Primitive types and Reference types
 1. Primitive type: Immutable, pass by values --> means their values cannot be chagned once created. When it is passed to a function or assigned to a new variable, it's actually the copy that was passed. Any changes made to this value do not affect the original value. 
 ```js
@@ -47,11 +66,17 @@ x = 10;
 console.log(Object.is(x, y));  // false - x now references a different value
 console.log(y);  // 5 - the original value remains unchanged
 ```
-
+NOTE: JavaScript has automatic garbage collection, so values that are no longer referenced (i.e., you’re not using them anymore) are eligible for removal from memory.
+Example:
+```js
+let a = "hello";
+a = "world"; // Now the original "hello" has no reference and will be cleaned up
+```
+The string "hello" is now unreachable — JavaScript will clean it up later.
 2. Reference types: mutable, pass by reference -> means their value can be changed. When it is passed to a function or assigned to a new variable, what gets passed is a reference ( address) to the original object in heap memory. Any changes made this the object through this reference affect the original object. 
 
 3. Difference to Java: 
-## Declare variable with 'let' and 'const'
+## Declare variable with 'let' and 'const' (block-scoped variables)
 
 ```js
 let message ;
@@ -65,7 +90,10 @@ let user = 'John', age = 25, message = 'Hello';
 - Similar to var, we can assign different value for variable message
 - Different to var, declaring let  twice for 1 variable will triggers a SyntaxError. Var allows you to re-declare the same variable within the same scope without any error
 - Different to var, it does have block scope {}. A let variable is only accessible within the block where it is declared. This means if you declare a varible inside an if statement, it will not be accessible outside that if block.
-- Hoisting: with var, variable can be used before it is declared, but its value will be undefined until the line where it is initialised. It is different to let, variable will not be initialized, you will get a ReferenceError instead
+
+- Hoisting: with var, variable can be used before it is declared, but its value will be undefined until the line where it is initialised. It is different to let, variable will not be initialized, you will get a ReferenceError instead. 
+- Note that for let and const, the variable is hoisted (the engine knows about it early), but it is NOT initialized yet.
+- 'NOT initialised' means variable exists in a "Temporal Dead Zone" (TDZ) from the start of the scope until the line where it’s declared and initialized. If you try to access the variable before its declaration line, JavaScript throws a ReferenceError.
 ```js
 console.log(x);
 var x =10;
@@ -106,6 +134,10 @@ for(let i =0;i<3;i++){
 }
 ```
 - If you declare a var variable globally, it becomes a property of the global object(e.g window), while let will not become property of the global object
+```js
+let myLet = 42;
+console.log(window.myLet); // undefined ❌
+```
 ## Type coercion: 
 - Concatenation with String values
 - Values of all types have an associated Bollean value
@@ -1398,6 +1430,9 @@ Using strict mode is a good habit, especially for larger projects or when learni
 
 
 ## Hoisting
+- Hoisting means JavaScript "moves" variable declarations to the top of their scope during the compilation phase before the code runs. 
+- For var, the variable is hoisted and initialized with undefined.
+- For let and const, the variable is hoisted (the engine knows about it early), but it is NOT initialized yet.
 - No matter where you declare the variable with 'var', since it is used for compilation step, it will always be read first eventhough you declare them at last in your script
 
 ```js
