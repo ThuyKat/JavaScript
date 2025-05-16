@@ -73,6 +73,83 @@ let a = "hello";
 a = "world"; // Now the original "hello" has no reference and will be cleaned up
 ```
 The string "hello" is now unreachable — JavaScript will clean it up later.
+NOTE: there is a special number value which is 'NaN' - means "not a number"
+Sure! Here's the explanation of `NaN` in `.md` (Markdown) format:
+
+
+### 📌 What is `NaN` in JavaScript?
+
+`NaN` stands for **"Not-a-Number"**. It's a special value in JavaScript that represents a result that **isn't a valid number**, even though its type is still `"number"`.
+
+---
+
+### 🔍 What Causes `NaN`?
+
+`NaN` occurs when you perform a **mathematical operation that doesn't make sense**.
+
+#### Examples:
+
+```js
+0 / 0;                 // NaN
+Math.sqrt(-1);         // NaN
+'abc' * 3;             // NaN
+parseInt('hello');     // NaN
+```
+
+---
+
+### 🔍 Characteristics of `NaN`
+
+* `typeof NaN` returns `'number'`
+* `NaN` is the **only value in JavaScript that is not equal to itself**:
+
+```js
+console.log(NaN === NaN); // false
+```
+
+---
+
+### ✅ How to Check for `NaN`
+
+#### Strict and recommended way:
+
+```js
+Number.isNaN(NaN); // true
+Number.isNaN('abc'); // false
+```
+
+#### Less strict (type coercion may happen):
+
+```js
+isNaN('abc'); // true (converts 'abc' to NaN internally)
+```
+
+---
+
+### 💡 Common Use Case
+
+Use `Number.isNaN()` when validating input or calculation results.
+
+```js
+const price = parseFloat("abc");
+if (Number.isNaN(price)) {
+  console.log("Invalid number input");
+}
+```
+
+---
+
+### 🔁 Summary Table
+
+| Concept           | Value            |
+| ----------------- | ---------------- |
+| Name              | `NaN`            |
+| Meaning           | Not-a-Number     |
+| Type              | `'number'`       |
+| Equal to itself?  | ❌ `NaN !== NaN`  |
+| Best way to check | `Number.isNaN()` |
+
+
 2. Reference types: mutable, pass by reference -> means their value can be changed. When it is passed to a function or assigned to a new variable, what gets passed is a reference ( address) to the original object in heap memory. Any changes made this the object through this reference affect the original object. 
 
 3. Difference to Java: 
